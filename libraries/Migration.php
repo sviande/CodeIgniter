@@ -160,7 +160,7 @@ class CI_Migration {
 				include $f[0];
 				$class = 'Migration_' . ucfirst($match[1]);
 
-				if ( ! class_exists($class))
+				if ( ! class_exists($class, false))
 				{
 					$this->_error_string = sprintf($this->lang->line('migration_class_doesnt_exist'), $class);
 					return FALSE;

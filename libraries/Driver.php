@@ -43,15 +43,15 @@ class CI_Driver_Library {
 
 		// The class will be prefixed with the parent lib
 		$child_class = $this->lib_name.'_'.$child;
-	
+
 		// Remove the CI_ prefix and lowercase
 		$lib_name = ucfirst(strtolower(str_replace('CI_', '', $this->lib_name)));
 		$driver_name = strtolower(str_replace('CI_', '', $child_class));
-		
+
 		if (in_array($driver_name, array_map('strtolower', $this->valid_drivers)))
 		{
 			// check and see if the driver is in a separate file
-			if ( ! class_exists($child_class))
+			if ( ! class_exists($child_class, false))
 			{
 				// check application path first
 				foreach (get_instance()->load->get_package_paths(TRUE) as $path)
@@ -70,7 +70,7 @@ class CI_Driver_Library {
 				}
 
 				// it's a valid driver, but the file simply can't be found
-				if ( ! class_exists($child_class))
+				if ( ! class_exists($child_class, false))
 				{
 					log_message('error', "Unable to load the requested driver: ".$child_class);
 					show_error("Unable to load the requested driver: ".$child_class);

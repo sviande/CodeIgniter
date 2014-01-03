@@ -218,7 +218,7 @@ class CI_Hooks {
 
 		if ($class !== FALSE)
 		{
-			if ( ! class_exists($class))
+			if ( ! class_exists($class, false))
 			{
 				require($filepath);
 			}

@@ -124,14 +124,14 @@ function &DB($params = '', $active_record_override = NULL)
 	{
 		require_once(BASEPATH.'database/DB_active_rec.php');
 
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('CI_DB', false))
 		{
 			eval('class CI_DB extends CI_DB_active_record { }');
 		}
 	}
 	else
 	{
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('CI_DB', false))
 		{
 			eval('class CI_DB extends CI_DB_driver { }');
 		}

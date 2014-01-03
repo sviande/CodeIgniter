@@ -329,7 +329,7 @@ class CI_Output {
 		global $BM, $CFG;
 
 		// Grab the super object if we can.
-		if (class_exists('CI_Controller'))
+		if (class_exists('CI_Controller', false))
 		{
 			$CI =& get_instance();
 		}

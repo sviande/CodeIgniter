@@ -281,7 +281,7 @@ class CI_Loader {
 				continue;
 			}
 
-			if ($db_conn !== FALSE AND ! class_exists('CI_DB'))
+			if ($db_conn !== FALSE AND ! class_exists('CI_DB', false))
 			{
 				if ($db_conn === TRUE)
 				{
@@ -291,7 +291,7 @@ class CI_Loader {
 				$CI->load->database($db_conn, FALSE, TRUE);
 			}
 
-			if ( ! class_exists('CI_Model'))
+			if ( ! class_exists('CI_Model', false))
 			{
 				load_class('Model', 'core');
 			}
@@ -326,7 +326,7 @@ class CI_Loader {
 		$CI =& get_instance();
 
 		// Do we even need to load the database class?
-		if (class_exists('CI_DB') AND $return == FALSE AND $active_record == NULL AND isset($CI->db) AND is_object($CI->db))
+		if (class_exists('CI_DB', false) AND $return == FALSE AND $active_record == NULL AND isset($CI->db) AND is_object($CI->db))
 		{
 			return FALSE;
 		}
@@ -355,7 +355,7 @@ class CI_Loader {
 	 */
 	public function dbutil()
 	{
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('CI_DB', false))
 		{
 			$this->database();
 		}
@@ -382,7 +382,7 @@ class CI_Loader {
 	 */
 	public function dbforge()
 	{
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('CI_DB', false))
 		{
 			$this->database();
 		}
@@ -610,7 +610,7 @@ class CI_Loader {
 	 */
 	public function driver($library = '', $params = NULL, $object_name = NULL)
 	{
-		if ( ! class_exists('CI_Driver_Library'))
+		if ( ! class_exists('CI_Driver_Library', false))
 		{
 			// we aren't instantiating an object here, that'll be done by the Library itself
 			require BASEPATH.'libraries/Driver.php';
@@ -1047,11 +1047,11 @@ class CI_Loader {
 
 		if ($prefix == '')
 		{
-			if (class_exists('CI_'.$class))
+			if (class_exists('CI_'.$class, false))
 			{
 				$name = 'CI_'.$class;
 			}
-			elseif (class_exists(config_item('subclass_prefix').$class))
+			elseif (class_exists(config_item('subclass_prefix').$class, false))
 			{
 				$name = config_item('subclass_prefix').$class;
 			}
@@ -1066,7 +1066,7 @@ class CI_Loader {
 		}
 
 		// Is the class name valid?
-		if ( ! class_exists($name))
+		if ( ! class_exists($name, false))
 		{
 			log_message('error', "Non-existent class: ".$name);
 			show_error("Non-existent class: ".$class);
