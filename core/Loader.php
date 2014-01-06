@@ -420,7 +420,7 @@ class CI_Loader {
    * @param	string
    * @param	array
    * @param	bool
-   * @return	void
+   * @return	void|string
    */
   public function view($view, $vars = array(), $return = FALSE)
   {
