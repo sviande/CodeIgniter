@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -26,7 +29,7 @@
  * @category	Libraries
  * @link		http://codeigniter.com/user_guide/general/routing.html
  */
-class CI_Router {
+class Router {
 
 	/**
 	 * Config class
@@ -56,6 +59,13 @@ class CI_Router {
 	 * @access public
 	 */
 	var $class			= '';
+	/**
+	 * Current file name
+	 *
+	 * @var string
+	 * @access public
+	 */
+	var $file			= '';
 	/**
 	 * Current method name
 	 *
@@ -406,7 +416,9 @@ class CI_Router {
 	 */
 	function set_class($class)
 	{
-		$this->class = str_replace(array('/', '.'), '', $class);
+		$file = str_replace(array('/', '.'), '', $class);
+		$this->set_file($file);
+		$this->class = config_item('app_namespace').'Controllers\\'.$file;
 	}
 
 	// --------------------------------------------------------------------
@@ -420,6 +432,33 @@ class CI_Router {
 	function fetch_class()
 	{
 		return $this->class;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set the file name
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	void
+	 */
+	function set_file($file)
+	{
+		$this->file = $file;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch the current file
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	function fetch_file()
+	{
+		return $this->file;
 	}
 
 	// --------------------------------------------------------------------

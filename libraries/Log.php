@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI\Libraries;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -24,7 +27,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/general/errors.html
  */
-class CI_Log {
+class Log {
 
 	protected $_log_path;
 	protected $_threshold	= 1;

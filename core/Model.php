@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -23,7 +26,7 @@
  * @category	Libraries
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/config.html
- * 
+ *
  * @property CI_DB_active_record $db              This is the platform-independent base Active Record implementation class.
  * @property CI_DB_forge $dbforge                 Database Utility Class
  * @property CI_Benchmark $benchmark              This class enables you to mark points and calculate the time difference between them.<br />  Memory consumption can also be displayed.
@@ -68,7 +71,7 @@
  * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
  * @property CI_Cache $cache                      CodeIgniter Caching Class
  */
-class CI_Model {
+class Model {
 
 	/**
 	 * Constructor

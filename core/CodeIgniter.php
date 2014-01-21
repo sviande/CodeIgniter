@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI;
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -69,7 +71,7 @@
  *  Define a custom error handler so we can log PHP errors
  * ------------------------------------------------------
  */
-	set_error_handler('_exception_handler');
+	set_error_handler('\CI\_exception_handler');
 
 	if ( ! is_php('5.3'))
 	{
@@ -230,24 +232,24 @@
 
 	function &get_instance()
 	{
-		return CI_Controller::get_instance();
+		return Controller::get_instance();
 	}
 
 
-	if (file_exists(APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php'))
+	if (file_exists(APPPATH.'core/Controller.php'))
 	{
-		require APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php';
+		require APPPATH.'core/Controller.php';
 	}
 
 	// Load the local application controller
 	// Note: The Router class automatically validates the controller path using the router->_validate_request().
 	// If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-	if ( ! file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php'))
+	if ( ! file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_file().'.php'))
 	{
 		show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
 	}
 
-	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
+	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_file().'.php');
 
 	// Set a mark point for benchmarking
 	$BM->mark('loading_time:_base_classes_end');
@@ -266,7 +268,7 @@
 
 	if ( ! class_exists($class, false)
 		OR strncmp($method, '_', 1) == 0
-		OR in_array(strtolower($method), array_map('strtolower', get_class_methods('CI_Controller')))
+		OR in_array(strtolower($method), array_map('strtolower', get_class_methods('Controller')))
 		)
 	{
 		if ( ! empty($RTR->routes['404_override']))

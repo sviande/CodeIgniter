@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -26,7 +29,7 @@
  * @category	Loader
  * @link		http://codeigniter.com/user_guide/libraries/loader.html
  */
-class CI_Loader {
+class Loader {
 
   // All these are set automatically. Don't mess with them.
   /**
@@ -900,7 +903,7 @@ class CI_Loader {
       $subdir = substr($class, 0, $last_slash + 1);
 
       // Get the filename from the path
-      $class = substr($class, $last_slash + 1);
+      $class = substr($class, $last_slash + $class1);
     }
 
     // We'll test for both lowercase and capitalized versions of the file name

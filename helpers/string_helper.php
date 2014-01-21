@@ -231,7 +231,7 @@ if ( ! function_exists('random_string'))
 			case 'encrypt'	:
 			case 'sha1'	:
 
-						$CI =& get_instance();
+						$CI =& \CI\get_instance();
 						$CI->load->helper('security');
 
 						return do_hash(uniqid(mt_rand(), TRUE), 'sha1');

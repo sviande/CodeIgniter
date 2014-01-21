@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -120,8 +123,9 @@ if ( ! function_exists('is_really_writable'))
 */
 if ( ! function_exists('load_class'))
 {
-	function &load_class($class, $directory = 'libraries', $prefix = 'CI_')
+	function &load_class($class, $directory = 'libraries', $namespace = null)
 	{
+		if($namespace == \null) $namespace = __NAMESPACE__ .'\\';
 		static $_classes = array();
 
 		// Does the class exist?  If so, we're done...
@@ -131,14 +135,13 @@ if ( ! function_exists('load_class'))
 		}
 
 		$name = FALSE;
-
 		// Look for the class first in the local application/libraries folder
 		// then in the native system/libraries folder
 		foreach (array(APPPATH, BASEPATH) as $path)
 		{
 			if (file_exists($path.$directory.'/'.$class.'.php'))
 			{
-				$name = $prefix.$class;
+				$name = $namespace.$class;
 
 				if (class_exists($name, false) === FALSE)
 				{
@@ -150,13 +153,13 @@ if ( ! function_exists('load_class'))
 		}
 
 		// Is the request a class extension?  If so we load it too
-		if (file_exists(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.'.php'))
+		if (file_exists(APPPATH.$directory.'/'.$class.'.php'))
 		{
-			$name = config_item('subclass_prefix').$class;
+			$name = config_item('subclass_namespace').$class;
 
 			if (class_exists($name, false) === FALSE)
 			{
-				require(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.'.php');
+				require(APPPATH.$directory.'/'.$class.'.php');
 			}
 		}
 

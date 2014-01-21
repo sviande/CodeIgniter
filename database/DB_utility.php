@@ -1,4 +1,8 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI\database;
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /**
  * Code Igniter
  *
@@ -22,7 +26,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
-class CI_DB_utility extends CI_DB_forge {
+class DB_utility extends CI_DB_forge {
 
 	var $db;
 	var $data_cache		= array();
@@ -36,7 +40,7 @@ class CI_DB_utility extends CI_DB_forge {
 	function __construct()
 	{
 		// Assign the main database object to $this->db
-		$CI =& get_instance();
+		$CI =& \CI\get_instance();
 		$this->db =& $CI->db;
 
 		log_message('debug', "Database Utility Class Initialized");
@@ -260,7 +264,7 @@ class CI_DB_utility extends CI_DB_forge {
 		extract($params);
 
 		// Load the xml helper
-		$CI =& get_instance();
+		$CI =& \CI\get_instance();
 		$CI->load->helper('xml');
 
 		// Generate the result
@@ -399,7 +403,7 @@ class CI_DB_utility extends CI_DB_forge {
 
 			// Load the Zip class and output it
 
-			$CI =& get_instance();
+			$CI =& \CI\get_instance();
 			$CI->load->library('zip');
 			$CI->zip->add_data($prefs['filename'], $this->_backup($prefs));
 			return $CI->zip->get_zip();

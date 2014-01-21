@@ -217,7 +217,7 @@ if ( ! function_exists('img'))
 
 			if ($k == 'src' AND strpos($v, '://') === FALSE)
 			{
-				$CI =& get_instance();
+				$CI =& \CI\get_instance();
 
 				if ($index_page === TRUE)
 				{
@@ -309,7 +309,7 @@ if ( ! function_exists('link_tag'))
 {
 	function link_tag($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = FALSE)
 	{
-		$CI =& get_instance();
+		$CI =& \CI\get_instance();
 
 		$link = '<link ';
 
