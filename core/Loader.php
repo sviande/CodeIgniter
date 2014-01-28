@@ -909,7 +909,7 @@ class Loader {
     // We'll test for both lowercase and capitalized versions of the file name
     foreach (array(ucfirst($class), strtolower($class)) as $class)
     {
-      $subclass = APPPATH.'libraries/'.$subdir.config_item('subclass_prefix').$class.'.php';
+      $subclass = APPPATH.'libraries/'.$subdir.$class.'.php';
 
       // Is this a class extension request?
       if (file_exists($subclass))
@@ -1058,13 +1058,13 @@ class Loader {
 
     if ($prefix == '')
     {
-      if (class_exists('CI_'.$class, false))
+      if (class_exists('CI\Libraries\\'.$class, false))
       {
-        $name = 'CI_'.$class;
+        $name = 'CI\Libraries\\'.$class;
       }
-      elseif (class_exists(config_item('subclass_prefix').$class, false))
+      elseif (class_exists(config_item('subclass_namespace').'Libraries\\'.$class, false))
       {
-        $name = config_item('subclass_prefix').$class;
+        $name = config_item('subclass_namespace').'Libraries\\'.$class;
       }
       else
       {
@@ -1079,8 +1079,8 @@ class Loader {
     // Is the class name valid?
     if ( ! class_exists($name, false))
     {
-      log_message('error', "Non-existent class: ".$name);
-      show_error("Non-existent class: ".$class);
+      \CI\log_message('error', "Non-existent class: ".$name);
+      \CI\show_error("Non-existent class: ".$class);
     }
 
     // Set the variable name we will assign the class to
@@ -1100,7 +1100,7 @@ class Loader {
     $this->_ci_classes[$class] = $classvar;
 
     // Instantiate the class
-    $CI =& get_instance();
+    $CI =& \CI\get_instance();
     if ($config !== NULL)
     {
       $CI->$classvar = new $name($config);

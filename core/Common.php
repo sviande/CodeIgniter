@@ -1,6 +1,8 @@
 <?php
 namespace CI;
 
+//@todo remove function exists we are in CI namespaces
+
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter

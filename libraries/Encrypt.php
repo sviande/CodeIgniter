@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI\Libraries;
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -26,7 +28,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/encryption.html
  */
-class CI_Encrypt {
+class Encrypt {
 
 	var $CI;
 	var $encryption_key	= '';
@@ -43,9 +45,9 @@ class CI_Encrypt {
 	 */
 	public function __construct()
 	{
-		$this->CI =& get_instance();
+		$this->CI =& \CI\get_instance();
 		$this->_mcrypt_exists = ( ! function_exists('mcrypt_encrypt')) ? FALSE : TRUE;
-		log_message('debug', "Encrypt Class Initialized");
+		\CI\log_message('debug', "Encrypt Class Initialized");
 	}
 
 	// --------------------------------------------------------------------
@@ -69,7 +71,7 @@ class CI_Encrypt {
 				return $this->encryption_key;
 			}
 
-			$CI =& get_instance();
+			$CI =& \CI\get_instance();
 			$key = $CI->config->item('encryption_key');
 
 			if ($key == FALSE)
