@@ -71,32 +71,32 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
  * @property CI_Cache $cache                      CodeIgniter Caching Class
  */
-class Model {
+class Model
+{
+    /**
+     * Constructor
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        log_message('debug', "Model Class Initialized");
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @access public
-	 */
-	function __construct()
-	{
-		log_message('debug', "Model Class Initialized");
-	}
-
-	/**
-	 * __get
-	 *
-	 * Allows models to access CI's loaded classes using the same
-	 * syntax as controllers.
-	 *
-	 * @param	string
-	 * @access private
-	 */
-	function __get($key)
-	{
-		$CI =& get_instance();
-		return $CI->$key;
-	}
+    /**
+     * __get
+     *
+     * Allows models to access CI's loaded classes using the same
+     * syntax as controllers.
+     *
+     * @param	string
+     * @access private
+     */
+    public function __get($key)
+    {
+        $CI =& get_instance();
+        return $CI->$key;
+    }
 }
 // END Model Class
 

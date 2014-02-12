@@ -28,42 +28,42 @@ namespace CI\DB;
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
  */
-class ActiveRecord extends driver
+class DB_active_rec extends driver
 {
 
-    var $ar_select = array();
-    var $ar_distinct = false;
-    var $ar_from = array();
-    var $ar_join = array();
-    var $ar_where = array();
-    var $ar_like = array();
-    var $ar_groupby = array();
-    var $ar_having = array();
-    var $ar_keys = array();
-    var $ar_limit = false;
-    var $ar_offset = false;
-    var $ar_order = false;
-    var $ar_orderby = array();
-    var $ar_set = array();
-    var $ar_wherein = array();
-    var $ar_aliased_tables = array();
-    var $ar_store_array = array();
+    public $ar_select = array();
+    public $ar_distinct = false;
+    public $ar_from = array();
+    public $ar_join = array();
+    public $ar_where = array();
+    public $ar_like = array();
+    public $ar_groupby = array();
+    public $ar_having = array();
+    public $ar_keys = array();
+    public $ar_limit = false;
+    public $ar_offset = false;
+    public $ar_order = false;
+    public $ar_orderby = array();
+    public $ar_set = array();
+    public $ar_wherein = array();
+    public $ar_aliased_tables = array();
+    public $ar_store_array = array();
 
     // Active Record Caching variables
-    var $ar_caching = false;
-    var $ar_cache_exists = array();
-    var $ar_cache_select = array();
-    var $ar_cache_from = array();
-    var $ar_cache_join = array();
-    var $ar_cache_where = array();
-    var $ar_cache_like = array();
-    var $ar_cache_groupby = array();
-    var $ar_cache_having = array();
-    var $ar_cache_orderby = array();
-    var $ar_cache_set = array();
+    public $ar_caching = false;
+    public $ar_cache_exists = array();
+    public $ar_cache_select = array();
+    public $ar_cache_from = array();
+    public $ar_cache_join = array();
+    public $ar_cache_where = array();
+    public $ar_cache_like = array();
+    public $ar_cache_groupby = array();
+    public $ar_cache_having = array();
+    public $ar_cache_orderby = array();
+    public $ar_cache_set = array();
 
-    var $ar_no_escape = array();
-    var $ar_cache_no_escape = array();
+    public $ar_no_escape = array();
+    public $ar_cache_no_escape = array();
 
     // --------------------------------------------------------------------
 
@@ -1082,7 +1082,7 @@ class ActiveRecord extends driver
      * @param  array  an associative array of insert values
      * @return  object
      */
-    function insert($table = '', $set = null)
+    public function insert($table = '', $set = null)
     {
         if (!is_null($set)) {
             $this->set($set);
