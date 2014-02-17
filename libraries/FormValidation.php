@@ -1,5 +1,5 @@
 <?php
-namespace CI\libraries;
+namespace CI\Libraries;
 
     /**
      * CodeIgniter

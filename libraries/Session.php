@@ -1,5 +1,5 @@
 <?php
-namespace CI\libraries;
+namespace CI\Libraries;
 
 /**
  * CodeIgniter
@@ -57,10 +57,10 @@ class Session
      */
     public function __construct($params = array())
     {
-        \CI\log_message('debug', "Session Class Initialized");
+        \CI\Core\log_message('debug', "Session Class Initialized");
 
         // Set the super object to a local variable for use throughout the class
-        $this->CI =& \CI\get_instance();
+        $this->CI =& \CI\Core\get_instance();
 
         // Set all the session preferences, which can either be set
         // manually via the $params array above or via the config file
@@ -69,7 +69,7 @@ class Session
         }
 
         if ($this->encryption_key == '') {
-            \CI\show_error('In order to use the Session class you are required to set an encryption key in your config file.');
+            \CI\Core\show_error('In order to use the Session class you are required to set an encryption key in your config file.');
         }
 
         // Load the string helper so we can use the strip_slashes() function
@@ -115,7 +115,7 @@ class Session
         // Delete expired sessions if necessary
         $this->_sess_gc();
 
-        \CI\log_message('debug', "Session routines successfully run");
+        \CI\Core\log_message('debug', "Session routines successfully run");
     }
 
     // --------------------------------------------------------------------
@@ -133,7 +133,7 @@ class Session
 
         // No cookie?  Goodbye cruel world!...
         if ($session === FALSE) {
-            \CI\log_message('debug', 'A session cookie was not found.');
+            \CI\Core\log_message('debug', 'A session cookie was not found.');
             return FALSE;
         }
 
@@ -147,7 +147,7 @@ class Session
 
             // Does the md5 hash match?  This is to prevent manipulation of session data in userspace
             if ($hash !==  md5($session.$this->encryption_key)) {
-                \CI\log_message('error', 'The session cookie data did not match what was expected. This could be a possible hacking attempt.');
+                \CI\Core\log_message('error', 'The session cookie data did not match what was expected. This could be a possible hacking attempt.');
                 $this->sess_destroy();
                 return FALSE;
             }
@@ -703,7 +703,7 @@ class Session
             $this->CI->db->where("last_activity < {$expire}");
             $this->CI->db->delete($this->sess_table_name);
 
-            \CI\log_message('debug', 'Session garbage collection performed.');
+            \CI\Core\log_message('debug', 'Session garbage collection performed.');
         }
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace CI\libraries;
+namespace CI\Libraries;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
