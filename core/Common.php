@@ -1,5 +1,5 @@
 <?php
-namespace CI\core;
+namespace CI\Core;
 
 /**
 * CodeIgniter
