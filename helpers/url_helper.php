@@ -40,7 +40,7 @@
 if ( ! function_exists('site_url')) {
     function site_url($uri = '')
     {
-        $CI =& \CI\get_instance();
+        $CI =& \CI\Core\get_instance();
         return $CI->config->siteUrl($uri);
     }
 }
@@ -61,7 +61,7 @@ if ( ! function_exists('site_url')) {
 if ( ! function_exists('base_url')) {
     function base_url($uri = '')
     {
-        $CI =& \CI\get_instance();
+        $CI =& \CI\Core\get_instance();
         return $CI->config->base_url($uri);
     }
 }
@@ -80,7 +80,7 @@ if ( ! function_exists('base_url')) {
 if ( ! function_exists('current_url')) {
     function current_url()
     {
-        $CI =& \CI\get_instance();
+        $CI =& \CI\Core\get_instance();
         return $CI->config->siteUrl($CI->uri->uriString());
     }
 }
@@ -97,7 +97,7 @@ if ( ! function_exists('current_url')) {
 if ( ! function_exists('uri_string')) {
     function uri_string()
     {
-        $CI =& get_instance();
+        $CI =& \CI\Core\get_instance();
         return $CI->uri->uriString();
     }
 }
@@ -115,7 +115,7 @@ if ( ! function_exists('uri_string')) {
 if ( ! function_exists('index_page')) {
     function index_page()
     {
-        $CI =& get_instance();
+        $CI =& \CI\Core\get_instance();
         return $CI->config->item('index_page');
     }
 }
