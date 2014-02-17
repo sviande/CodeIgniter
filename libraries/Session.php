@@ -193,7 +193,7 @@ class Session
         }
 
         // Does the IP Match?
-        if ($this->sess_match_ip == true AND $session['ip_address'] != $this->CI->input->ip_address()) {
+        if ($this->sess_match_ip == true AND $session['ip_address'] != $this->CI->input->ipAddress()) {
             $this->sess_destroy();
             return false;
         }
@@ -357,7 +357,7 @@ class Session
         }
 
         // To make the session ID even more secure we'll combine it with the user's IP
-        $new_sessid .= $this->CI->input->ip_address();
+        $new_sessid .= $this->CI->input->ipAddress();
 
         // Turn it into a hash
         $new_sessid = md5(uniqid($new_sessid, true));
