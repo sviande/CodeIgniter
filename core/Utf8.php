@@ -43,11 +43,10 @@ class Utf8
 
         global $CFG;
 
-        if (
-          preg_match('/./u', 'é') === 1 // PCRE must support UTF-8
-          AND function_exists('iconv') // iconv must be installed
-          AND ini_get('mbstring.func_overload') != 1 // Multibyte string function overloading cannot be enabled
-          AND $CFG->item('charset') == 'UTF-8' // Application charset must be UTF-8
+        if(preg_match('/./u', 'é') === 1
+            && function_exists('iconv')
+            && ini_get('mbstring.func_overload') != 1
+            && $CFG->item('charset') == 'UTF-8'
         ) {
             log_message('debug', "UTF-8 Support Enabled");
 
@@ -79,9 +78,9 @@ class Utf8
      * @param  string
      * @return  string
      */
-    public function clean_string($str)
+    public function cleanString($str)
     {
-        if ($this->_is_ascii($str) === false) {
+        if ($this->isAscii($str) === false) {
             $str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
         }
 
@@ -101,7 +100,7 @@ class Utf8
      * @param  string
      * @return  string
      */
-    public function safe_ascii_for_xml($str)
+    public function safeAsciiForXml($str)
     {
         return remove_invisible_characters($str, false);
     }
@@ -118,7 +117,7 @@ class Utf8
      * @param  string - input encoding
      * @return  string
      */
-    public function convert_to_utf8($str, $encoding)
+    public function convertToUtf8($str, $encoding)
     {
         if (function_exists('iconv')) {
             $str = @iconv($encoding, 'UTF-8', $str);
@@ -139,10 +138,10 @@ class Utf8
      * Tests if a string is standard 7-bit ASCII or not
      *
      * @access  public
-     * @param  string
+     * @param  string $str
      * @return  bool
      */
-    public function _is_ascii($str)
+    public function isAscii($str)
     {
         return (preg_match('/[^\x00-\x7F]/S', $str) == 0);
     }

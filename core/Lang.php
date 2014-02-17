@@ -1,19 +1,19 @@
 <?php
 namespace CI\core;
 
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP 5.1.6 or newer
- *
- * @package    CodeIgniter
- * @author    ExpressionEngine Dev Team
- * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license    http://codeigniter.com/user_guide/license.html
- * @link    http://codeigniter.com
- * @since    Version 1.0
- * @filesource
- */
+    /**
+     * CodeIgniter
+     *
+     * An open source application development framework for PHP 5.1.6 or newer
+     *
+     * @package    CodeIgniter
+     * @author    ExpressionEngine Dev Team
+     * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+     * @license    http://codeigniter.com/user_guide/license.html
+     * @link    http://codeigniter.com
+     * @since    Version 1.0
+     * @filesource
+     */
 
 // ------------------------------------------------------------------------
 
@@ -58,11 +58,11 @@ class Lang
      * Load a language file
      *
      * @access  public
-     * @param  mixed  the name of the language file to be loaded. Can be an array
-     * @param  string  the language (english, etc.)
-     * @param  bool  return loaded array of translations
-     * @param  bool  add suffix to $langfile
-     * @param  string  alternative path to look for language file
+     * @param  mixed  $langfile the name of the language file to be loaded. Can be an array
+     * @param  string $idiom the language (english, etc.)
+     * @param  bool   $return return loaded array of translations
+     * @param  bool   $add_suffix add suffix to $langfile
+     * @param  string $alt_path alternative path to look for language file
      * @return  mixed
      */
     public function load($langfile = '', $idiom = '', $return = false, $add_suffix = true, $alt_path = '')
@@ -76,14 +76,14 @@ class Lang
         $langfile .= '.php';
 
         if (in_array($langfile, $this->is_loaded, true)) {
-            return;
+            return true;
         }
 
         $config =& get_config();
 
         if ($idiom == '') {
             $deft_lang = (!isset($config['language'])) ? 'english' : $config['language'];
-            $idiom     = ($deft_lang == '') ? 'english' : $deft_lang;
+            $idiom = ($deft_lang == '') ? 'english' : $deft_lang;
         }
 
         // Determine where the language file is and load it
@@ -92,7 +92,7 @@ class Lang
         } else {
             $found = false;
 
-            foreach (get_instance()->load->get_package_paths(true) as $package_path) {
+            foreach (get_instance()->load->getPackagePaths(true) as $package_path) {
                 if (file_exists($package_path . 'language/' . $idiom . '/' . $langfile)) {
                     include($package_path . 'language/' . $idiom . '/' . $langfile);
                     $found = true;
@@ -108,7 +108,7 @@ class Lang
 
         if (!isset($lang)) {
             log_message('error', 'Language file contains no data: language/' . $idiom . '/' . $langfile);
-            return;
+            return false;
         }
 
         if ($return == true) {
@@ -116,7 +116,7 @@ class Lang
         }
 
         $this->is_loaded[] = $langfile;
-        $this->language    = array_merge($this->language, $lang);
+        $this->language = array_merge($this->language, $lang);
         unset($lang);
 
         log_message('debug', 'Language file loaded: language/' . $idiom . '/' . $langfile);
@@ -134,7 +134,7 @@ class Lang
      */
     public function line($line = '')
     {
-        $value = ($line == '' OR !isset($this->language[$line])) ? false : $this->language[$line];
+        $value = ($line == '' || !isset($this->language[$line])) ? false : $this->language[$line];
 
         // Because killer robots like unicorns!
         if ($value === false) {
@@ -143,7 +143,6 @@ class Lang
 
         return $value;
     }
-
 }
 // END Language Class
 

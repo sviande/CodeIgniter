@@ -82,7 +82,7 @@ if ( ! function_exists('entity_decode')) {
     function entity_decode($str, $charset='UTF-8')
     {
         global $SEC;
-        return $SEC->entity_decode($str, $charset);
+        return $SEC->entityDecode($str, $charset);
     }
 }
 

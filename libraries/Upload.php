@@ -101,7 +101,7 @@ class CI_Upload
                             'error_msg'			=> array(),
                             'mimes'				=> array(),
                             'remove_spaces'		=> TRUE,
-                            'xss_clean'			=> FALSE,
+                            'xssClean'			=> FALSE,
                             'temp_prefix'		=> "temp_file_",
                             'client_name'		=> ''
                         );
@@ -808,7 +808,7 @@ class CI_Upload
         }
 
         $CI =& get_instance();
-        return $CI->security->xss_clean($data, TRUE);
+        return $CI->security->xssClean($data, TRUE);
     }
 
     // --------------------------------------------------------------------

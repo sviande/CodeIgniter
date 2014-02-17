@@ -168,11 +168,11 @@ $URI =& load_class('URI', 'core');
  * @var \CI\Core\Router $RTR
  */
 $RTR =& load_class('Router', 'core');
-$RTR->_set_routing();
+$RTR->setRouting();
 
 // Set any routing overrides that may exist in the main index file
 if (isset($routing)) {
-    $RTR->_set_overrides($routing);
+    $RTR->setOverrides($routing);
 }
 
 /**
@@ -189,7 +189,7 @@ $OUT =& load_class('Output', 'core');
  * ------------------------------------------------------
  */
 if ($EXT->callHook('cache_override') === false) {
-    if ($OUT->_display_cache($CFG, $URI) == true) {
+    if ($OUT->displayCache($CFG, $URI) == true) {
         exit;
     }
 }
@@ -238,15 +238,15 @@ if (file_exists(APPPATH . 'core/Controller.php')) {
 }
 
 // Load the local application controller
-// Note: The Router class automatically validates the controller path using the router->_validate_request().
+// Note: The Router class automatically validates the controller path using the router->validateRequest().
 // If this include fails it means that the default controller in the Routes.php file is not resolving to something valid
-if (!file_exists(APPPATH . 'controllers/' . $RTR->fetch_directory() . $RTR->fetch_file() . '.php')) {
+if (!file_exists(APPPATH . 'controllers/' . $RTR->fetchDirectory() . $RTR->fetchFile() . '.php')) {
     show_error(
         'Unable to load your default controller.'
     );
 }
 
-include(APPPATH . 'controllers/' . $RTR->fetch_directory() . $RTR->fetch_file() . '.php');
+include(APPPATH . 'controllers/' . $RTR->fetchDirectory() . $RTR->fetchFile() . '.php');
 
 // Set a mark point for benchmarking
 $BM->mark('loading_time:_base_classes_end');
@@ -260,8 +260,8 @@ $BM->mark('loading_time:_base_classes_end');
  *  loader class can be called via the URI, nor can
  *  controller functions that begin with an underscore
  */
-$class  = $RTR->fetch_class();
-$method = $RTR->fetch_method();
+$class  = $RTR->fetchClass();
+$method = $RTR->fetchMethod();
 
 if (!class_exists($class, false)
     || strncmp($method, '_', 1) == 0
@@ -360,7 +360,7 @@ $EXT->callHook('post_controller');
  * ------------------------------------------------------
  */
 if ($EXT->callHook('display_override') === false) {
-    $OUT->_display();
+    $OUT->display();
 }
 
 /*

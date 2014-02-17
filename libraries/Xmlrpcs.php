@@ -79,8 +79,8 @@ class CI_Xmlrpcs extends CI_Xmlrpc
             $this->object = $config['object'];
         }
 
-        if (isset($config['xss_clean'])) {
-            $this->xss_clean = $config['xss_clean'];
+        if (isset($config['xssClean'])) {
+            $this->xss_clean = $config['xssClean'];
         }
     }
 

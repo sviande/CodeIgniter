@@ -215,7 +215,7 @@ class Config
 
     /**
      * Site URL
-     * Returns base_url . index_page [. uri_string]
+     * Returns base_url . index_page [. uriString]
      *
      * @access  public
      * @param  string $uri the URI string
@@ -239,7 +239,7 @@ class Config
 
     /**
      * Base URL
-     * Returns base_url [. uri_string]
+     * Returns base_url [. uriString]
      *
      * @access public
      * @param string $uri

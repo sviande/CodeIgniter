@@ -52,7 +52,7 @@ namespace CI\core;
  * @property Output                                                                $output
  * @property Pagination                                                            $pagination
  * @property Parser                                                                $parser
- * @property Profiler                                                              $profiler
+ * @property \CI\Libraries\Profiler                                                              $profiler
  * @property Router                                                                $router
  * @property \CI\Libraries\Session                                                 $session
  * @property Sha1                                                                  $sha1
@@ -62,7 +62,7 @@ namespace CI\core;
  * @property Unit_test                                                             $unit_test
  * @property Upload                                                                $upload
  * @property URI                                                                   $uri
- * @property User_agent                                                            $user_agent
+ * @property User_agent                                                            $userAgent
  * @property Validation                                                            $validation
  * @property Xmlrpc                                                                $xmlrpc
  * @property Xmlrpcs                                                               $xmlrpcs

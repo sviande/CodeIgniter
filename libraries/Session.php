@@ -157,7 +157,7 @@ class Session
         $session = $this->_unserialize($session);
 
         // Is the session data we unserialized an array with the correct format?
-        if ( ! is_array($session) OR ! isset($session['session_id']) OR ! isset($session['ip_address']) OR ! isset($session['user_agent']) OR ! isset($session['last_activity'])) {
+        if ( ! is_array($session) OR ! isset($session['session_id']) OR ! isset($session['ip_address']) OR ! isset($session['userAgent']) OR ! isset($session['last_activity'])) {
             $this->sess_destroy();
             return FALSE;
         }
@@ -175,7 +175,7 @@ class Session
         }
 
         // Does the User Agent Match?
-        if ($this->sess_match_useragent == TRUE AND trim($session['user_agent']) != trim(substr($this->CI->input->user_agent(), 0, 120))) {
+        if ($this->sess_match_useragent == TRUE AND trim($session['userAgent']) != trim(substr($this->CI->input->userAgent(), 0, 120))) {
             $this->sess_destroy();
             return FALSE;
         }
@@ -189,7 +189,7 @@ class Session
             }
 
             if ($this->sess_match_useragent == TRUE) {
-                $this->CI->db->where('user_agent', $session['user_agent']);
+                $this->CI->db->where('userAgent', $session['userAgent']);
             }
 
             $query = $this->CI->db->get($this->sess_table_name);
@@ -243,7 +243,7 @@ class Session
         // Before continuing, we need to determine if there is any custom data to deal with.
         // Let's determine this by removing the default indexes to see if there's anything left in the array
         // and set the session data while we're at it
-        foreach (array('session_id','ip_address','user_agent','last_activity') as $val) {
+        foreach (array('session_id','ip_address','userAgent','last_activity') as $val) {
             unset($custom_userdata[$val]);
             $cookie_userdata[$val] = $this->userdata[$val];
         }
@@ -288,7 +288,7 @@ class Session
         $this->userdata = array(
                             'session_id'	=> md5(uniqid($sessid, TRUE)),
                             'ip_address'	=> $this->CI->input->ip_address(),
-                            'user_agent'	=> substr($this->CI->input->user_agent(), 0, 120),
+                            'userAgent'	=> substr($this->CI->input->userAgent(), 0, 120),
                             'last_activity'	=> $this->now,
                             'user_data'		=> ''
                             );
@@ -344,7 +344,7 @@ class Session
         if ($this->sess_use_database === TRUE) {
             // set cookie explicitly to only have our session data
             $cookie_data = array();
-            foreach (array('session_id','ip_address','user_agent','last_activity') as $val) {
+            foreach (array('session_id','ip_address','userAgent','last_activity') as $val) {
                 $cookie_data[$val] = $this->userdata[$val];
             }
 

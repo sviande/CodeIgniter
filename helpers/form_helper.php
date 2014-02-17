@@ -55,7 +55,7 @@ if (!function_exists('form_open')) {
         }
 
         // If no action is provided then set to the current url
-        $action OR $action = $CI->config->siteUrl($CI->uri->uri_string());
+        $action OR $action = $CI->config->siteUrl($CI->uri->uriString());
 
         $form = '<form action="' . $action . '"';
 
@@ -69,7 +69,7 @@ if (!function_exists('form_open')) {
               $CI->config->base_url()
             ) === false OR strpos($form, 'method="get"'))
         ) {
-            $hidden[$CI->security->get_csrf_token_name()] = $CI->security->get_csrf_hash();
+            $hidden[$CI->security->getCsrfTokenName()] = $CI->security->getCsrfHash();
         }
 
         if (is_array($hidden) AND count($hidden) > 0) {
@@ -930,7 +930,7 @@ if (!function_exists('_get_validation_object')) {
         // We set this as a variable since we're returning by reference.
         $return = false;
 
-        if (false !== ($object = $CI->load->is_loaded('formvalidation'))) {
+        if (false !== ($object = $CI->load->isLoaded('formvalidation'))) {
             if (!isset($CI->$object) OR !is_object($CI->$object)) {
                 return $return;
             }

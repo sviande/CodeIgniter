@@ -30,7 +30,7 @@ namespace CI\DB;
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
  */
-class DB_driver
+class driver
 {
 
     public $username;
@@ -283,7 +283,7 @@ class DB_driver
             if ($this->db_debug) {
                 // grab the error number and message now, as we might run some
                 // additional queries before displaying the error
-                $error_no  = $this->_error_number();
+                $error_no = $this->_error_number();
                 $error_msg = $this->_error_message();
 
                 // We call this function in order to roll-back queries
@@ -295,11 +295,11 @@ class DB_driver
                 // Log and display errors
                 log_message('error', 'Query error: ' . $error_msg);
                 return $this->display_error(
-                  array(
-                    'Error Number: ' . $error_no,
-                    $error_msg,
-                    $sql
-                  )
+                    array(
+                        'Error Number: ' . $error_no,
+                        $error_msg,
+                        $sql
+                    )
                 );
             }
 
@@ -338,16 +338,16 @@ class DB_driver
 
         // Load and instantiate the result driver
 
-        $driver         = $this->load_rdriver();
-        $RES            = new $driver();
-        $RES->conn_id   = $this->conn_id;
+        $driver = $this->load_rdriver();
+        $RES = new $driver();
+        $RES->conn_id = $this->conn_id;
         $RES->result_id = $this->result_id;
 
         if ($this->dbdriver == 'oci8') {
-            $RES->stmt_id    = $this->stmt_id;
-            $RES->curs_id    = null;
+            $RES->stmt_id = $this->stmt_id;
+            $RES->curs_id = null;
             $RES->limit_used = $this->limit_used;
-            $this->stmt_id   = false;
+            $this->stmt_id = false;
         }
 
         // oci8 vars must be set before calling this
@@ -362,13 +362,13 @@ class DB_driver
             // resource ID won't be any good once we've cached the
             // result object, so we'll have to compile the data
             // and save it)
-            $CR                = new CI_DB_result();
-            $CR->num_rows      = $RES->num_rows();
+            $CR = new CI_DB_result();
+            $CR->num_rows = $RES->num_rows();
             $CR->result_object = $RES->result_object();
-            $CR->result_array  = $RES->result_array();
+            $CR->result_array = $RES->result_array();
 
             // Reset these since cached objects can not utilize resource IDs.
-            $CR->conn_id   = null;
+            $CR->conn_id = null;
             $CR->result_id = null;
 
             $this->CACHE->write($sql, $CR);
@@ -555,7 +555,7 @@ class DB_driver
 
         // Construct the binded query
         $result = $segments[0];
-        $i      = 0;
+        $i = 0;
         foreach ($binds as $bind) {
             $result .= $this->escape($bind);
             $result .= $segments[++$i];
@@ -576,8 +576,8 @@ class DB_driver
     public function is_write_type($sql)
     {
         if (!preg_match(
-          '/^\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i',
-          $sql
+            '/^\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i',
+            $sql
         )
         ) {
             return false;
@@ -713,7 +713,7 @@ class DB_driver
         }
 
         $retval = array();
-        $query  = $this->query($sql);
+        $query = $this->query($sql);
 
         if ($query->num_rows() > 0) {
             foreach ($query->result_array() as $row) {
@@ -739,8 +739,8 @@ class DB_driver
     public function table_exists($table_name)
     {
         return (!in_array(
-          $this->_protect_identifiers($table_name, true, false, false),
-          $this->list_tables()
+            $this->_protect_identifiers($table_name, true, false, false),
+            $this->list_tables()
         )) ? false : true;
     }
 
@@ -1152,8 +1152,12 @@ class DB_driver
      * @param  bool
      * @return  string
      */
-    public function _protect_identifiers($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true)
-    {
+    public function _protect_identifiers(
+        $item,
+        $prefix_single = false,
+        $protect_identifiers = null,
+        $field_exists = true
+    ) {
         if (!is_bool($protect_identifiers)) {
             $protect_identifiers = $this->_protect_identifiers;
         }
@@ -1175,7 +1179,7 @@ class DB_driver
         // Basically we remove everything to the right of the first space
         if (strpos($item, ' ') !== false) {
             $alias = strstr($item, ' ');
-            $item  = substr($item, 0, -strlen($alias));
+            $item = substr($item, 0, -strlen($alias));
         } else {
             $alias = '';
         }

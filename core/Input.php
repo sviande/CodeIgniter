@@ -88,8 +88,8 @@ class Input
         log_message('debug', "Input Class Initialized");
 
         $this->allow_get_array = (config_item('allow_get_array') === true);
-        $this->enable_xss      = (config_item('global_xss_filtering') === true);
-        $this->enable_csrf     = (config_item('csrf_protection') === true);
+        $this->enable_xss = (config_item('global_xss_filtering') === true);
+        $this->enable_csrf = (config_item('csrf_protection') === true);
 
         global $SEC;
         $this->security =& $SEC;
@@ -101,7 +101,7 @@ class Input
         }
 
         // Sanitize global arrays
-        $this->_sanitize_globals();
+        $this->sanitizeGlobals();
     }
 
     // --------------------------------------------------------------------
@@ -124,7 +124,7 @@ class Input
         }
 
         if ($xss_clean === true) {
-            return $this->security->xss_clean($array[$index]);
+            return $this->security->xssClean($array[$index]);
         }
 
         return $array[$index];
@@ -391,7 +391,7 @@ class Input
     // --------------------------------------------------------------------
 
     /**
-     * @todo FILTER_FLAG_IPV4
+     * @todo 5.3 >
      * Validate IPv4 Address
      *
      * Updated version suggested by Geert De Deckere
@@ -417,7 +417,7 @@ class Input
         foreach ($ip_segments as $segment) {
             // IP segments must be digits and can not be
             // longer than 3 digits or greater then 255
-            if ($segment == '' OR preg_match("/[^0-9]/", $segment) OR $segment > 255 OR strlen($segment) > 3) {
+            if ($segment == '' || preg_match("/[^0-9]/", $segment) || $segment > 255 || strlen($segment) > 3) {
                 return false;
             }
         }
@@ -428,6 +428,8 @@ class Input
     // --------------------------------------------------------------------
 
     /**
+     *
+     * @todo remove filter_var(FLAG_IPV6);
      * Validate IPv6 Address
      *
      * @access  protected
@@ -440,7 +442,7 @@ class Input
         // 0-ffff per group
         // one set of consecutive 0 groups can be collapsed to ::
 
-        $groups    = 8;
+        $groups = 8;
         $collapsed = false;
 
         $chunks = array_filter(
@@ -448,7 +450,7 @@ class Input
         );
 
         // Rule out easy nonsense
-        if (current($chunks) == ':' OR end($chunks) == ':') {
+        if (current($chunks) == ':' || end($chunks) == ':') {
             return false;
         }
 
@@ -480,12 +482,12 @@ class Input
 
                     $collapsed = true;
                 }
-            } elseif (preg_match("/[^0-9a-f]/i", $seg) OR strlen($seg) > 4) {
+            } elseif (preg_match("/[^0-9a-f]/i", $seg) || strlen($seg) > 4) {
                 return false; // invalid segment
             }
         }
 
-        return $collapsed OR $groups == 1;
+        return $collapsed || $groups == 1;
     }
 
     // --------------------------------------------------------------------
@@ -496,7 +498,7 @@ class Input
      * @access  public
      * @return  string
      */
-    public function user_agent()
+    public function userAgent()
     {
         if ($this->user_agent !== false) {
             return $this->user_agent;
@@ -523,7 +525,7 @@ class Input
      * @access  private
      * @return  void
      */
-    public function _sanitize_globals()
+    public function sanitizeGlobals()
     {
         // It would be "wrong" to unset any of these GLOBALS.
         $protected = array(
@@ -569,22 +571,22 @@ class Input
         if ($this->allow_get_array == false) {
             $_GET = array();
         } else {
-            if (is_array($_GET) AND count($_GET) > 0) {
+            if (is_array($_GET) && count($_GET) > 0) {
                 foreach ($_GET as $key => $val) {
-                    $_GET[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+                    $_GET[$this->cleanInputKeys($key)] = $this->cleanInputData($val);
                 }
             }
         }
 
         // Clean $_POST Data
-        if (is_array($_POST) AND count($_POST) > 0) {
+        if (is_array($_POST) && count($_POST) > 0) {
             foreach ($_POST as $key => $val) {
-                $_POST[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+                $_POST[$this->cleanInputKeys($key)] = $this->cleanInputData($val);
             }
         }
 
         // Clean $_COOKIE Data
-        if (is_array($_COOKIE) AND count($_COOKIE) > 0) {
+        if (is_array($_COOKIE) && count($_COOKIE) > 0) {
             // Also get rid of specially treated cookies that might be set by a server
             // or silly application, that are of no use to a CI application anyway
             // but that when present will trip our 'Disallowed Key Characters' alarm
@@ -595,7 +597,7 @@ class Input
             unset($_COOKIE['$Domain']);
 
             foreach ($_COOKIE as $key => $val) {
-                $_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+                $_COOKIE[$this->cleanInputKeys($key)] = $this->cleanInputData($val);
             }
         }
 
@@ -604,8 +606,8 @@ class Input
 
 
         // CSRF Protection check on HTTP requests
-        if ($this->enable_csrf == true && !$this->is_cli_request()) {
-            $this->security->csrf_verify();
+        if ($this->enable_csrf == true && !$this->isCliRequest()) {
+            $this->security->csrfVerify();
         }
 
         log_message('debug', "Global POST and COOKIE data sanitized");
@@ -623,12 +625,12 @@ class Input
      * @param  string
      * @return  string
      */
-    public function _clean_input_data($str)
+    public function cleanInputData($str)
     {
         if (is_array($str)) {
             $new_array = array();
             foreach ($str as $key => $val) {
-                $new_array[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+                $new_array[$this->cleanInputKeys($key)] = $this->cleanInputData($val);
             }
             return $new_array;
         }
@@ -644,7 +646,7 @@ class Input
 
         // Clean UTF-8 if supported
         if (UTF8_ENABLED === true) {
-            $str = $this->uni->clean_string($str);
+            $str = $this->uni->cleanString($str);
         }
 
         // Remove control characters
@@ -652,7 +654,7 @@ class Input
 
         // Should we filter the input data?
         if ($this->enable_xss === true) {
-            $str = $this->security->xss_clean($str);
+            $str = $this->security->xssClean($str);
         }
 
         // Standardize newlines if needed
@@ -678,7 +680,7 @@ class Input
      * @param  string
      * @return  string
      */
-    public function _clean_input_keys($str)
+    public function cleanInputKeys($str)
     {
         if (!preg_match("/^[a-z0-9:_\/-]+$/i", $str)) {
             exit('Disallowed Key Characters.');
@@ -686,7 +688,7 @@ class Input
 
         // Clean UTF-8 if supported
         if (UTF8_ENABLED === true) {
-            $str = $this->uni->clean_string($str);
+            $str = $this->uni->cleanString($str);
         }
 
         return $str;
@@ -700,11 +702,11 @@ class Input
      * In Apache, you can simply call apache_request_headers(), however for
      * people running other webservers the function is undefined.
      *
-     * @param  bool XSS cleaning
+     * @param  bool $xss_clean XSS cleaning
      *
      * @return array
      */
-    public function request_headers($xss_clean = false)
+    public function requestHeaders($xss_clean = false)
     {
         // Look at Apache go!
         if (function_exists('apache_request_headers')) {
@@ -739,14 +741,14 @@ class Input
      *
      * Returns the value of a single member of the headers class member
      *
-     * @param  string    array key for $this->headers
-     * @param  boolean    XSS Clean or not
+     * @param  string  $index array key for $this->headers
+     * @param  boolean $xss_clean XSS Clean or not
      * @return  mixed    FALSE on failure, string on success
      */
-    public function get_request_header($index, $xss_clean = false)
+    public function getRequestHeader($index, $xss_clean = false)
     {
         if (empty($this->headers)) {
-            $this->request_headers();
+            $this->requestHeaders();
         }
 
         if (!isset($this->headers[$index])) {
@@ -754,7 +756,7 @@ class Input
         }
 
         if ($xss_clean === true) {
-            return $this->security->xss_clean($this->headers[$index]);
+            return $this->security->xssClean($this->headers[$index]);
         }
 
         return $this->headers[$index];
@@ -769,7 +771,7 @@ class Input
      *
      * @return  boolean
      */
-    public function is_ajax_request()
+    public function isAjaxRequest()
     {
         return ($this->server('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest');
     }
@@ -783,11 +785,10 @@ class Input
      *
      * @return  bool
      */
-    public function is_cli_request()
+    public function isCliRequest()
     {
-        return (php_sapi_name() === 'cli' OR defined('STDIN'));
+        return (php_sapi_name() === 'cli' || defined('STDIN'));
     }
-
 }
 
 /* End of file Input.php */

@@ -99,7 +99,7 @@ class CI_Parser
 
         if ($return == FALSE) {
             $CI =& get_instance();
-            $CI->output->append_output($template);
+            $CI->output->appendOutput($template);
         }
 
         return $template;

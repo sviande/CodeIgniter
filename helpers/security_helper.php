@@ -39,7 +39,7 @@ if ( ! function_exists('xss_clean')) {
     function xss_clean($str, $is_image = FALSE)
     {
         $CI =& \CI\get_instance();
-        return $CI->security->xss_clean($str, $is_image);
+        return $CI->security->xssClean($str, $is_image);
     }
 }
 
@@ -56,7 +56,7 @@ if ( ! function_exists('sanitize_filename')) {
     function sanitize_filename($filename)
     {
         $CI =& \CI\get_instance();
-        return $CI->security->sanitize_filename($filename);
+        return $CI->security->sanitizeFilename($filename);
     }
 }
 

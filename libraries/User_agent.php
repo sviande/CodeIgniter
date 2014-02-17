@@ -24,7 +24,7 @@
  * @subpackage	Libraries
  * @category	User Agent
  * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/libraries/user_agent.html
+ * @link		http://codeigniter.com/user_guide/libraries/userAgent.html
  */
 class CI_User_agent
 {

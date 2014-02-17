@@ -26,7 +26,7 @@ namespace CI\libraries;
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/libraries/form_validation.html
  */
-class Form_validation
+class FormValidation
 {
 
     protected $CI;
@@ -281,7 +281,7 @@ class Form_validation
             }
 
             // Is there a validation rule for the particular URI being accessed?
-            $uri = ($group == '') ? trim($this->CI->uri->ruri_string(), '/') : $group;
+            $uri = ($group == '') ? trim($this->CI->uri->ruriString(), '/') : $group;
 
             if ($uri != '' && isset($this->config_rules[$uri])) {
                 $this->setRules($this->config_rules[$uri]);
@@ -659,7 +659,7 @@ class Form_validation
      * @access  public
      * @param  string $field
      * @param  string $value
-     * @param bool $default
+     * @param bool    $default
      * @return  string
      */
     public function setSelect($field = '', $value = '', $default = false)
@@ -695,14 +695,15 @@ class Form_validation
      * selected in the event of an error
      *
      * @access  public
-     * @param  string
-     * @param  string
+     * @param string $field
+     * @param string $value
+     * @param bool   $default
      * @return  string
      */
-    public function set_radio($field = '', $value = '', $default = false)
+    public function setRadio($field = '', $value = '', $default = false)
     {
-        if (!isset($this->field_data[$field]) OR !isset($this->field_data[$field]['postdata'])) {
-            if ($default === true AND count($this->field_data) === 0) {
+        if (!isset($this->field_data[$field]) || !isset($this->field_data[$field]['postdata'])) {
+            if ($default === true && count($this->field_data) === 0) {
                 return ' checked="checked"';
             }
             return '';
@@ -715,7 +716,7 @@ class Form_validation
                 return '';
             }
         } else {
-            if (($field == '' OR $value == '') OR ($field != $value)) {
+            if (($field == '' || $value == '') || ($field != $value)) {
                 return '';
             }
         }
@@ -732,14 +733,15 @@ class Form_validation
      * selected in the event of an error
      *
      * @access  public
-     * @param  string
-     * @param  string
+     * @param  string $field
+     * @param  string $value
+     * @param  bool   $default
      * @return  string
      */
-    public function set_checkbox($field = '', $value = '', $default = false)
+    public function setCheckbox($field = '', $value = '', $default = false)
     {
-        if (!isset($this->field_data[$field]) OR !isset($this->field_data[$field]['postdata'])) {
-            if ($default === true AND count($this->field_data) === 0) {
+        if (!isset($this->field_data[$field]) || !isset($this->field_data[$field]['postdata'])) {
+            if ($default === true && count($this->field_data) === 0) {
                 return ' checked="checked"';
             }
             return '';
@@ -752,7 +754,7 @@ class Form_validation
                 return '';
             }
         } else {
-            if (($field == '' OR $value == '') OR ($field != $value)) {
+            if (($field == '' || $value == '') || ($field != $value)) {
                 return '';
             }
         }
@@ -784,11 +786,11 @@ class Form_validation
      * Performs a Regular Expression match test.
      *
      * @access  public
-     * @param  string
-     * @param  regex
+     * @param  string $str
+     * @param  string $regex
      * @return  bool
      */
-    public function regex_match($str, $regex)
+    public function regexMatch($str, $regex)
     {
         if (!preg_match($regex, $str)) {
             return false;
@@ -803,8 +805,8 @@ class Form_validation
      * Match one field to another
      *
      * @access  public
-     * @param  string
-     * @param  field
+     * @param  string $str
+     * @param  string $field
      * @return  bool
      */
     public function matches($str, $field)
@@ -828,7 +830,7 @@ class Form_validation
      * @param  field
      * @return  bool
      */
-    public function is_unique($str, $field)
+    public function isUnique($str, $field)
     {
         list($table, $field) = explode('.', $field);
         $query = $this->CI->db->limit(1)->get_where($table, array($field => $str));
@@ -1169,7 +1171,7 @@ class Form_validation
             return $data;
         }
 
-        if ($this->safe_form_data == false OR $data === '') {
+        if ($this->safe_form_data == false || $data === '') {
             return $data;
         }
 
@@ -1187,7 +1189,7 @@ class Form_validation
      */
     public function prep_url($str = '')
     {
-        if ($str == 'http://' OR $str == '') {
+        if ($str == 'http://' || $str == '') {
             return '';
         }
 
@@ -1223,7 +1225,7 @@ class Form_validation
      */
     public function xss_clean($str)
     {
-        return $this->CI->security->xss_clean($str);
+        return $this->CI->security->xssClean($str);
     }
 
     // --------------------------------------------------------------------

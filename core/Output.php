@@ -62,7 +62,6 @@ class Output
     /**
      * Determines wether profiler is enabled
      *
-     * @var book
      * @access  protected
      */
     protected $enable_profiler = false;
@@ -72,14 +71,14 @@ class Output
      * @var bool
      * @access  protected
      */
-    protected $_zlib_oc = false;
+    protected $zlib_oc = false;
     /**
      * List of profiler sections
      *
      * @var array
      * @access  protected
      */
-    protected $_profiler_sections = array();
+    protected $profiler_sections = array();
     /**
      * Whether or not to parse variables like {elapsed_time} and {memory_usage}
      *
@@ -94,10 +93,10 @@ class Output
      */
     public function __construct()
     {
-        $this->_zlib_oc = @ini_get('zlib.output_compression');
+        $this->zlib_oc = @ini_get('zlib.output_compression');
 
         // Get mime types for later
-        if (defined('ENVIRONMENT') AND file_exists(APPPATH . 'config/' . ENVIRONMENT . '/mimes.php')) {
+        if (defined('ENVIRONMENT') && file_exists(APPPATH . 'config/' . ENVIRONMENT . '/mimes.php')) {
             include APPPATH . 'config/' . ENVIRONMENT . '/mimes.php';
         } else {
             include APPPATH . 'config/mimes.php';
@@ -119,7 +118,7 @@ class Output
      * @access  public
      * @return  string
      */
-    public function get_output()
+    public function getOutput()
     {
         return $this->final_output;
     }
@@ -133,9 +132,9 @@ class Output
      *
      * @access  public
      * @param  string
-     * @return  void
+     * @return  Output
      */
-    public function set_output($output)
+    public function setOutput($output)
     {
         $this->final_output = $output;
 
@@ -150,10 +149,10 @@ class Output
      * Appends data onto the output string
      *
      * @access  public
-     * @param  string
-     * @return  void
+     * @param  string $output
+     * @return  Output
      */
-    public function append_output($output)
+    public function appendOutput($output)
     {
         if ($this->final_output == '') {
             $this->final_output = $output;
@@ -175,22 +174,23 @@ class Output
      * how to permit header data to be saved with the cache data...
      *
      * @access  public
-     * @param  string
-     * @param  bool
-     * @return  void
+     * @param  string $header
+     * @param  bool   $replace
+     * @return  Output|void
      */
-    public function set_header($header, $replace = true)
+    public function setHeader($header, $replace = true)
     {
         // If zlib.output_compression is enabled it will compress the output,
         // but it will not modify the content-length header to compensate for
         // the reduction, causing the browser to hang waiting for more data.
         // We'll just skip content-length in those cases.
 
-        if ($this->_zlib_oc && strncasecmp($header, 'content-length', 14) == 0) {
+        if ($this->zlib_oc && strncasecmp($header, 'content-length', 14) == 0) {
             return;
         }
+        return
 
-        $this->headers[] = array($header, $replace);
+            $this->headers[] = array($header, $replace);
 
         return $this;
     }
@@ -201,10 +201,10 @@ class Output
      * Set Content Type Header
      *
      * @access  public
-     * @param  string  extension of the file we're outputting
-     * @return  void
+     * @param  string $mime_type extension of the file we're outputting
+     * @return  Output
      */
-    public function set_content_type($mime_type)
+    public function setContentType($mime_type)
     {
         if (strpos($mime_type, '/') === false) {
             $extension = ltrim($mime_type, '.');
@@ -233,11 +233,11 @@ class Output
      * moved to Common procedural functions in 1.7.2
      *
      * @access  public
-     * @param  int    the status code
-     * @param  string
-     * @return  void
+     * @param  int    $code the status code
+     * @param  string $text
+     * @return  Output
      */
-    public function set_status_header($code = 200, $text = '')
+    public function setStatusHeader($code = 200, $text = '')
     {
         set_status_header($code, $text);
 
@@ -250,10 +250,10 @@ class Output
      * Enable/disable Profiler
      *
      * @access  public
-     * @param  bool
-     * @return  void
+     * @param  bool $val
+     * @return  Output
      */
-    public function enable_profiler($val = true)
+    public function enableProfiler($val = true)
     {
         $this->enable_profiler = (is_bool($val)) ? $val : true;
 
@@ -269,12 +269,12 @@ class Output
      *
      * @access  public
      * @param  array
-     * @return  void
+     * @return  Output
      */
-    public function set_profiler_sections($sections)
+    public function setProfilerSections($sections)
     {
         foreach ($sections as $section => $enable) {
-            $this->_profiler_sections[$section] = ($enable !== false) ? true : false;
+            $this->profiler_sections[$section] = ($enable !== false) ? true : false;
         }
 
         return $this;
@@ -286,8 +286,8 @@ class Output
      * Set Cache
      *
      * @access  public
-     * @param  integer
-     * @return  void
+     * @param  integer $time
+     * @return  Output
      */
     public function cache($time)
     {
@@ -310,10 +310,10 @@ class Output
      * benchmark timer so the page rendering speed and memory usage can be shown.
      *
      * @access  public
-     * @param  string
+     * @param  string $output
      * @return  mixed
      */
-    public function _display($output = '')
+    public function display($output = '')
     {
         // Note:  We use globals because we can't use $CI =& get_instance()
         // since this function is sometimes called by the caching mechanism,
@@ -321,7 +321,7 @@ class Output
         global $BM, $CFG;
 
         // Grab the super object if we can.
-        if (class_exists('CI_Controller', false)) {
+        if (class_exists('CI\\Core\\Controller', false)) {
             $CI =& get_instance();
         }
 
@@ -338,7 +338,7 @@ class Output
         // own _output() method and we are not dealing with a cache file, which we
         // can determine by the existence of the $CI object above
         if ($this->cache_expiration > 0 && isset($CI) && !method_exists($CI, '_output')) {
-            $this->_write_cache($output);
+            $this->WriteCache($output);
         }
 
         // --------------------------------------------------------------------
@@ -358,12 +358,13 @@ class Output
         // --------------------------------------------------------------------
 
         // Is compression requested?
-        if ($CFG->item('compress_output') === true && $this->_zlib_oc == false) {
+        if ($CFG->item('compress_output') === true && $this->zlib_oc == false) {
             if (extension_loaded('zlib')) {
-                if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) AND strpos(
-                    $_SERVER['HTTP_ACCEPT_ENCODING'],
-                    'gzip'
-                  ) !== false
+                if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) &&
+                    strpos(
+                        $_SERVER['HTTP_ACCEPT_ENCODING'],
+                        'gzip'
+                    ) !== false
                 ) {
                     ob_start('ob_gzhandler');
                 }
@@ -398,8 +399,8 @@ class Output
         if ($this->enable_profiler == true) {
             $CI->load->library('profiler');
 
-            if (!empty($this->_profiler_sections)) {
-                $CI->profiler->set_sections($this->_profiler_sections);
+            if (!empty($this->profiler_sections)) {
+                $CI->profiler->set_sections($this->profiler_sections);
             }
 
             // If the output data contains closing </body> and </html> tags
@@ -433,24 +434,24 @@ class Output
      * Write a Cache File
      *
      * @access  public
-     * @param  string
+     * @param  string $output
      * @return  void
      */
-    public function _write_cache($output)
+    public function writeCache($output)
     {
         $CI =& get_instance();
         $path = $CI->config->item('cache_path');
 
         $cache_path = ($path == '') ? APPPATH . 'cache/' : $path;
 
-        if (!is_dir($cache_path) OR !is_really_writable($cache_path)) {
+        if (!is_dir($cache_path) || !is_really_writable($cache_path)) {
             log_message('error', "Unable to write cache file: " . $cache_path);
             return;
         }
 
         $uri = $CI->config->item('base_url') .
-          $CI->config->item('index_page') .
-          $CI->uri->uri_string();
+            $CI->config->item('index_page') .
+            $CI->uri->uriString();
 
         $cache_path .= md5($uri);
 
@@ -480,18 +481,18 @@ class Output
      * Update/serve a cached file
      *
      * @access  public
-     * @param  object  config class
+     * @param  Config $CFG  config class
      * @param  object  uri class
-     * @return  void
+     * @return  bool
      */
-    public function _display_cache(&$CFG, &$URI)
+    public function displayCache(&$CFG, &$URI)
     {
         $cache_path = ($CFG->item('cache_path') == '') ? APPPATH . 'cache/' : $CFG->item('cache_path');
 
         // Build the file path.  The file name is an MD5 hash of the full URI
         $uri = $CFG->item('base_url') .
-          $CFG->item('index_page') .
-          $URI->uri_string;
+            $CFG->item('index_page') .
+            $URI->uri_string;
 
         $filepath = $cache_path . md5($uri);
 
@@ -528,12 +529,10 @@ class Output
         }
 
         // Display the cache
-        $this->_display(str_replace($match['0'], '', $cache));
+        $this->display(str_replace($match['0'], '', $cache));
         log_message('debug', "Cache file is current. Sending it to browser.");
         return true;
     }
-
-
 }
 // END Output Class
 

@@ -28,7 +28,7 @@ namespace CI\DB;
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
  */
-class DB_active_rec extends driver
+class ActiveRecord extends driver
 {
 
     public $ar_select = array();
@@ -814,9 +814,9 @@ class DB_active_rec extends driver
     /**
      * Sets the LIMIT value
      *
-     * @param  integer  the limit value
-     * @param  integer  the offset value
-     * @return  object
+     * @param integer $value the limit value
+     * @param string $offset the offset value
+     * @return  ActiveRecord
      */
     public function limit($value, $offset = '')
     {

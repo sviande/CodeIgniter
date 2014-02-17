@@ -51,7 +51,7 @@ class CI_Driver_Library
             // check and see if the driver is in a separate file
             if ( ! class_exists($child_class, false)) {
                 // check application path first
-                foreach (get_instance()->load->get_package_paths(TRUE) as $path) {
+                foreach (get_instance()->load->getPackagePaths(TRUE) as $path) {
                     // loves me some nesting!
                     foreach (array(ucfirst($driver_name), $driver_name) as $class) {
                         $filepath = $path.'libraries/'.$lib_name.'/drivers/'.$class.'.php';

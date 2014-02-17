@@ -81,7 +81,7 @@ if ( ! function_exists('current_url')) {
     function current_url()
     {
         $CI =& \CI\get_instance();
-        return $CI->config->siteUrl($CI->uri->uri_string());
+        return $CI->config->siteUrl($CI->uri->uriString());
     }
 }
 
@@ -98,7 +98,7 @@ if ( ! function_exists('uri_string')) {
     function uri_string()
     {
         $CI =& get_instance();
-        return $CI->uri->uri_string();
+        return $CI->uri->uriString();
     }
 }
 
@@ -465,7 +465,7 @@ if ( ! function_exists('url_title')) {
  *
  * Header redirect in two flavors
  * For very fine grained control over headers, you could use the Output
- * Library's set_header() function.
+ * Library's setHeader() function.
  *
  * @access	public
  * @param	string	the URL
