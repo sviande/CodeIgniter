@@ -35,10 +35,9 @@ namespace CI\Helpers;
  *
  * Creates the opening portion of the form.
  *
- * @access  public
- * @param  string  the URI segments of the form destination
- * @param  array  a key/value pair of attributes
- * @param  array  a key/value pair hidden data
+ * @param  string       $action the URI segments of the form destination
+ * @param  array|string $attributes a key/value pair of attributes
+ * @param  array        $hidden a key/value pair hidden data
  * @return  string
  */
 function form_open($action = '', $attributes = '', $hidden = array())
@@ -55,7 +54,7 @@ function form_open($action = '', $attributes = '', $hidden = array())
     }
 
     // If no action is provided then set to the current url
-    $action OR $action = $CI->config->siteUrl($CI->uri->uriString());
+    $action || $action = $CI->config->siteUrl($CI->uri->uriString());
 
     $form = '<form action="' . $action . '"';
 
@@ -64,15 +63,13 @@ function form_open($action = '', $attributes = '', $hidden = array())
     $form .= '>';
 
     // Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
-    if ($CI->config->item('csrf_protection') === true AND !(strpos(
-                $action,
-                $CI->config->base_url()
-            ) === false OR strpos($form, 'method="get"'))
+    if ($CI->config->item('csrf_protection') === true &&
+        !(strpos($action, $CI->config->baseUrl()) === false || strpos($form, 'method="get"'))
     ) {
         $hidden[$CI->security->getCsrfTokenName()] = $CI->security->getCsrfHash();
     }
 
-    if (is_array($hidden) AND count($hidden) > 0) {
+    if (is_array($hidden) && count($hidden) > 0) {
         $form .= sprintf("<div style=\"display:none\">%s</div>", form_hidden($hidden));
     }
 
@@ -87,9 +84,9 @@ function form_open($action = '', $attributes = '', $hidden = array())
  * Creates the opening portion of the form, but with "multipart/form-data".
  *
  * @access  public
- * @param  string  the URI segments of the form destination
- * @param  array  a key/value pair of attributes
- * @param  array  a key/value pair hidden data
+ * @param  string       $action the URI segments of the form destination
+ * @param  array|string $attributes a key/value pair of attributes
+ * @param  array        $hidden a key/value pair hidden data
  * @return  string
  */
 function form_open_multipart($action = '', $attributes = array(), $hidden = array())
@@ -112,8 +109,9 @@ function form_open_multipart($action = '', $attributes = array(), $hidden = arra
  * array with multiple values.
  *
  * @access  public
- * @param  mixed
- * @param  string
+ * @param mixed  $name
+ * @param string $value
+ * @param bool   $recursing
  * @return  string
  */
 function form_hidden($name, $value = '', $recursing = false)
@@ -149,9 +147,9 @@ function form_hidden($name, $value = '', $recursing = false)
  * Text Input Field
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_input($data = '', $value = '', $extra = '')
@@ -169,9 +167,9 @@ function form_input($data = '', $value = '', $extra = '')
  * Identical to the input function but adds the "password" type
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_password($data = '', $value = '', $extra = '')
@@ -192,9 +190,9 @@ function form_password($data = '', $value = '', $extra = '')
  * Identical to the input function but adds the "file" type
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_upload($data = '', $value = '', $extra = '')
@@ -213,16 +211,16 @@ function form_upload($data = '', $value = '', $extra = '')
  * Textarea field
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_textarea($data = '', $value = '', $extra = '')
 {
     $defaults = array('name' => ((!is_array($data)) ? $data : ''), 'cols' => '40', 'rows' => '10');
 
-    if (!is_array($data) OR !isset($data['value'])) {
+    if (!is_array($data) || !isset($data['value'])) {
         $val = $value;
     } else {
         $val = $data['value'];
@@ -242,11 +240,11 @@ function form_textarea($data = '', $value = '', $extra = '')
  * Multi-select menu
  *
  * @access  public
- * @param  string
- * @param  array
- * @param  mixed
- * @param  string
- * @return  type
+ * @param  string $name
+ * @param  array  $options
+ * @param  mixed  $selected
+ * @param  string $extra
+ * @return  string
  */
 function form_multiselect($name = '', $options = array(), $selected = array(), $extra = '')
 {
@@ -263,10 +261,10 @@ function form_multiselect($name = '', $options = array(), $selected = array(), $
  * Drop-down Menu
  *
  * @access  public
- * @param  string
- * @param  array
- * @param  string
- * @param  string
+ * @param  string       $name
+ * @param  array        $options
+ * @param  string|array $selected
+ * @param  string       $extra
  * @return  string
  */
 function form_dropdown($name = '', $options = array(), $selected = array(), $extra = '')
@@ -289,7 +287,7 @@ function form_dropdown($name = '', $options = array(), $selected = array(), $ext
 
     $multiple = (count($selected) > 1 && strpos($extra, 'multiple') === false) ? ' multiple="multiple"' : '';
 
-    $form = '<select name="' . $name . '"' . $extra . $multiple . ">\n";
+    $form = '<select namtypee="' . $name . '"' . $extra . $multiple . ">\n";
 
     foreach ($options as $key => $val) {
         $key = (string)$key;
@@ -322,17 +320,17 @@ function form_dropdown($name = '', $options = array(), $selected = array(), $ext
  * Checkbox Field
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  bool
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  bool   $checked
+ * @param  string $extra
  * @return  string
  */
 function form_checkbox($data = '', $value = '', $checked = false, $extra = '')
 {
     $defaults = array('type' => 'checkbox', 'name' => ((!is_array($data)) ? $data : ''), 'value' => $value);
 
-    if (is_array($data) AND array_key_exists('checked', $data)) {
+    if (is_array($data) && array_key_exists('checked', $data)) {
         $checked = $data['checked'];
 
         if ($checked == false) {
@@ -357,10 +355,10 @@ function form_checkbox($data = '', $value = '', $checked = false, $extra = '')
  * Radio Button
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  bool
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  bool   $checked
+ * @param  string $extra
  * @return  string
  */
 function form_radio($data = '', $value = '', $checked = false, $extra = '')
@@ -379,9 +377,9 @@ function form_radio($data = '', $value = '', $checked = false, $extra = '')
  * Submit Button
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_submit($data = '', $value = '', $extra = '')
@@ -397,9 +395,9 @@ function form_submit($data = '', $value = '', $extra = '')
  * Reset Button
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $value
+ * @param  string $extra
  * @return  string
  */
 function form_reset($data = '', $value = '', $extra = '')
@@ -415,9 +413,9 @@ function form_reset($data = '', $value = '', $extra = '')
  * Form Button
  *
  * @access  public
- * @param  mixed
- * @param  string
- * @param  string
+ * @param  mixed  $data
+ * @param  string $content
+ * @param  string $extra
  * @return  string
  */
 
@@ -425,7 +423,7 @@ function form_button($data = '', $content = '', $extra = '')
 {
     $defaults = array('name' => ((!is_array($data)) ? $data : ''), 'type' => 'button');
 
-    if (is_array($data) AND isset($data['content'])) {
+    if (is_array($data) && isset($data['content'])) {
         $content = $data['content'];
         unset($data['content']); // content is not an attribute
     }
@@ -439,9 +437,9 @@ function form_button($data = '', $content = '', $extra = '')
  * Form Label Tag
  *
  * @access  public
- * @param  string  The text to appear onscreen
- * @param  string  The id the label applies to
- * @param  string  Additional attributes
+ * @param  string       $label_text The text to appear onscreen
+ * @param  string       $id The id the label applies to
+ * @param  array|string $attributes Additional attributes
  * @return  string
  */
 
@@ -454,7 +452,7 @@ function form_label($label_text = '', $id = '', $attributes = array())
         $label .= " for=\"$id\"";
     }
 
-    if (is_array($attributes) AND count($attributes) > 0) {
+    if (is_array($attributes) && count($attributes) > 0) {
         foreach ($attributes as $key => $val) {
             $label .= ' ' . $key . '="' . $val . '"';
         }
@@ -473,8 +471,8 @@ function form_label($label_text = '', $id = '', $attributes = array())
  * use form_fieldset_close()
  *
  * @access
- * @param  string  The legend text
- * @param  string  Additional attributes
+ * @param  string       $legend_text The legend text
+ * @param  array|string $attributes Additional attributes
  * @return  string
  */
 function form_fieldset($legend_text = '', $attributes = array())
@@ -498,7 +496,7 @@ function form_fieldset($legend_text = '', $attributes = array())
  * Fieldset Close Tag
  *
  * @access  public
- * @param  string
+ * @param  string $extra
  * @return  string
  */
 
@@ -514,7 +512,7 @@ function form_fieldset_close($extra = '')
  * Form Close Tag
  *
  * @access  public
- * @param  string
+ * @param  string $extra
  * @return  string
  */
 
@@ -531,7 +529,8 @@ function form_close($extra = '')
  * Formats text so that it can be safely placed in a form field in the event it has HTML tags.
  *
  * @access  public
- * @param  string
+ * @param string $str
+ * @param string $field_name
  * @return  string
  */
 
@@ -582,7 +581,8 @@ function form_prep($str = '', $field_name = '')
  * is active it retrieves the info from the validation class
  *
  * @access  public
- * @param  string
+ * @param string $field
+ * @param string $default
  * @return  mixed
  */
 
@@ -608,9 +608,9 @@ function set_value($field = '', $default = '')
  * If Form Validation is active it retrieves the info from the validation class
  *
  * @access  public
- * @param  string
- * @param  string
- * @param  bool
+ * @param  string $field
+ * @param  string $value
+ * @param  bool   $default
  * @return  string
  */
 
@@ -620,7 +620,7 @@ function set_select($field = '', $value = '', $default = false)
 
     if ($OBJ === false) {
         if (!isset($_POST[$field])) {
-            if (count($_POST) === 0 AND $default == true) {
+            if (count($_POST) === 0 && $default == true) {
                 return ' selected="selected"';
             }
             return '';
@@ -633,7 +633,7 @@ function set_select($field = '', $value = '', $default = false)
                 return '';
             }
         } else {
-            if (($field == '' OR $value == '') OR ($field != $value)) {
+            if (($field == '' || $value == '') || ($field != $value)) {
                 return '';
             }
         }
@@ -653,9 +653,9 @@ function set_select($field = '', $value = '', $default = false)
  * If Form Validation is active it retrieves the info from the validation class
  *
  * @access  public
- * @param  string
- * @param  string
- * @param  bool
+ * @param  string $field
+ * @param  string $value
+ * @param  bool   $default
  * @return  string
  */
 
@@ -665,7 +665,7 @@ function set_checkbox($field = '', $value = '', $default = false)
 
     if ($OBJ === false) {
         if (!isset($_POST[$field])) {
-            if (count($_POST) === 0 AND $default == true) {
+            if (count($_POST) === 0 && $default == true) {
                 return ' checked="checked"';
             }
             return '';
@@ -678,7 +678,7 @@ function set_checkbox($field = '', $value = '', $default = false)
                 return '';
             }
         } else {
-            if (($field == '' OR $value == '') OR ($field != $value)) {
+            if (($field == '' || $value == '') || ($field != $value)) {
                 return '';
             }
         }
@@ -698,9 +698,9 @@ function set_checkbox($field = '', $value = '', $default = false)
  * If Form Validation is active it retrieves the info from the validation class
  *
  * @access  public
- * @param  string
- * @param  string
- * @param  bool
+ * @param  string $field
+ * @param  string $value
+ * @param  bool   $default
  * @return  string
  */
 
@@ -710,7 +710,7 @@ function set_radio($field = '', $value = '', $default = false)
 
     if ($OBJ === false) {
         if (!isset($_POST[$field])) {
-            if (count($_POST) === 0 AND $default == true) {
+            if (count($_POST) === 0 && $default == true) {
                 return ' checked="checked"';
             }
             return '';
@@ -723,7 +723,7 @@ function set_radio($field = '', $value = '', $default = false)
                 return '';
             }
         } else {
-            if (($field == '' OR $value == '') OR ($field != $value)) {
+            if (($field == '' || $value == '') || ($field != $value)) {
                 return '';
             }
         }
@@ -743,9 +743,9 @@ function set_radio($field = '', $value = '', $default = false)
  * form validation class.
  *
  * @access  public
- * @param  string
- * @param  string
- * @param  string
+ * @param  string $field
+ * @param  string $prefix
+ * @param  string $suffix
  * @return  string
  */
 
@@ -767,8 +767,8 @@ function form_error($field = '', $prefix = '', $suffix = '')
  * function for the form validation class.
  *
  * @access  public
- * @param  string
- * @param  string
+ * @param  string $prefix
+ * @param  string $suffix
  * @return  string
  */
 
@@ -789,8 +789,8 @@ function validation_errors($prefix = '', $suffix = '')
  * Helper function used by some of the form helpers
  *
  * @access  private
- * @param  array
- * @param  array
+ * @param  array $attributes
+ * @param  array $default
  * @return  string
  */
 
@@ -830,38 +830,38 @@ function _parse_form_attributes($attributes, $default)
  * Helper function used by some of the form helpers
  *
  * @access  private
- * @param  mixed
- * @param  bool
+ * @param  mixed $attributes
+ * @param  bool  $formtag
  * @return  string
  */
 
 function _attributes_to_string($attributes, $formtag = false)
 {
-    if (is_string($attributes) AND strlen($attributes) > 0) {
-        if ($formtag == true AND strpos($attributes, 'method=') === false) {
+    if (is_string($attributes) && strlen($attributes) > 0) {
+        if ($formtag == true && strpos($attributes, 'method=') === false) {
             $attributes .= ' method="post"';
         }
 
-        if ($formtag == true AND strpos($attributes, 'accept-charset=') === false) {
-            $attributes .= ' accept-charset="' . strtolower(config_item('charset')) . '"';
+        if ($formtag == true && strpos($attributes, 'accept-charset=') === false) {
+            $attributes .= ' accept-charset="' . strtolower(\CI\Core\config_item('charset')) . '"';
         }
 
         return ' ' . $attributes;
     }
 
-    if (is_object($attributes) AND count($attributes) > 0) {
+    if (is_object($attributes) && count($attributes) > 0) {
         $attributes = (array)$attributes;
     }
 
-    if (is_array($attributes) AND count($attributes) > 0) {
+    if (is_array($attributes) && count($attributes) > 0) {
         $atts = '';
 
-        if (!isset($attributes['method']) AND $formtag === true) {
+        if (!isset($attributes['method']) && $formtag === true) {
             $atts .= ' method="post"';
         }
 
-        if (!isset($attributes['accept-charset']) AND $formtag === true) {
-            $atts .= ' accept-charset="' . strtolower(config_item('charset')) . '"';
+        if (!isset($attributes['accept-charset']) && $formtag === true) {
+            $atts .= ' accept-charset="' . strtolower(\CI\Core\config_item('charset')) . '"';
         }
 
         foreach ($attributes as $key => $val) {
@@ -870,6 +870,8 @@ function _attributes_to_string($attributes, $formtag = false)
 
         return $atts;
     }
+
+    return '';
 }
 
 // ------------------------------------------------------------------------
@@ -885,13 +887,13 @@ function _attributes_to_string($attributes, $formtag = false)
  */
 function &_get_validation_object()
 {
-    $CI =& \CI\get_instance();
+    $CI =& \CI\Core\get_instance();
 
     // We set this as a variable since we're returning by reference.
     $return = false;
 
     if (false !== ($object = $CI->load->isLoaded('formvalidation'))) {
-        if (!isset($CI->$object) OR !is_object($CI->$object)) {
+        if (!isset($CI->$object) || !is_object($CI->$object)) {
             return $return;
         }
 
