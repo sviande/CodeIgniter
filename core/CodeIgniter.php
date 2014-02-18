@@ -45,6 +45,7 @@ define('CI_VERSION', '2.1.4');
  */
 define('CI_CORE', false);
 
+
 /*
  * ------------------------------------------------------
  *  Load the global functions
@@ -262,10 +263,9 @@ $BM->mark('loading_time:_base_classes_end');
  */
 $class  = $RTR->fetchClass();
 $method = $RTR->fetchMethod();
-
 if (!class_exists($class, false)
     || strncmp($method, '_', 1) == 0
-    || in_array(strtolower($method), array_map('strtolower', get_class_methods('Controller')))
+    || !in_array(strtolower($method), array_map('strtolower', get_class_methods($class)))
 ) {
     if (!empty($RTR->routes['404_override'])) {
         $x      = explode('/', $RTR->routes['404_override']);
