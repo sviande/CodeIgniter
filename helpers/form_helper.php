@@ -30,6 +30,7 @@ namespace CI\Helpers;
 
 // ------------------------------------------------------------------------
 
+
 /**
  * Form Declaration
  *
@@ -596,7 +597,7 @@ function set_value($field = '', $default = '')
         return form_prep($_POST[$field], $field);
     }
 
-    return form_prep($OBJ->set_value($field, $default), $field);
+    return form_prep($OBJ->setValue($field, $default), $field);
 }
 
 // ------------------------------------------------------------------------
@@ -641,7 +642,7 @@ function set_select($field = '', $value = '', $default = false)
         return ' selected="selected"';
     }
 
-    return $OBJ->set_select($field, $value, $default);
+    return $OBJ->setSelect($field, $value, $default);
 }
 
 // ------------------------------------------------------------------------
@@ -686,7 +687,7 @@ function set_checkbox($field = '', $value = '', $default = false)
         return ' checked="checked"';
     }
 
-    return $OBJ->set_checkbox($field, $value, $default);
+    return $OBJ->setCheckbox($field, $value, $default);
 }
 
 // ------------------------------------------------------------------------
@@ -731,7 +732,7 @@ function set_radio($field = '', $value = '', $default = false)
         return ' checked="checked"';
     }
 
-    return $OBJ->set_radio($field, $value, $default);
+    return $OBJ->setRadio($field, $value, $default);
 }
 
 // ------------------------------------------------------------------------
@@ -778,7 +779,7 @@ function validation_errors($prefix = '', $suffix = '')
         return '';
     }
 
-    return $OBJ->error_string($prefix, $suffix);
+    return $OBJ->errorString($prefix, $suffix);
 }
 
 // ------------------------------------------------------------------------
@@ -883,7 +884,7 @@ function _attributes_to_string($attributes, $formtag = false)
  * the object and returns it.
  *
  * @access  private
- * @return  mixed
+ * @return  \CI\Libraries\FormValidation
  */
 function &_get_validation_object()
 {
