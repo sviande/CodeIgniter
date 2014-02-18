@@ -570,7 +570,7 @@ class Profiler
             ) . '\';">' . $this->CI->lang->line('profiler_section_show') . '</span>)</legend>';
         $output .= "<table style='width:100%;display:none' id='ci_profiler_session_data'>";
 
-        foreach ($this->CI->session->all_userdata() as $key => $val) {
+        foreach ($this->CI->session->allUserdata() as $key => $val) {
             if (is_array($val) OR is_object($val)) {
                 $val = print_r($val, true);
             }

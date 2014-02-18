@@ -366,7 +366,7 @@ class Cart
 
         // Is our cart empty?  If so we delete it from the session
         if (count($this->cart_contents) <= 2) {
-            $this->CI->session->unset_userdata('cart_contents');
+            $this->CI->session->unsetUserdata('cart_contents');
 
             // Nothing more to do... coffee time!
             return false;
@@ -374,7 +374,7 @@ class Cart
 
         // If we made it this far it means that our cart has data.
         // Let's pass it to the Session class so it can be stored
-        $this->CI->session->set_userdata(array('cart_contents' => $this->cart_contents));
+        $this->CI->session->setUserdata(array('cart_contents' => $this->cart_contents));
 
         // Woot!
         return true;
@@ -510,7 +510,7 @@ class Cart
         $this->cart_contents['cart_total'] = 0;
         $this->cart_contents['total_items'] = 0;
 
-        $this->CI->session->unset_userdata('cart_contents');
+        $this->CI->session->unsetUserdata('cart_contents');
     }
 }
 // END Cart Class

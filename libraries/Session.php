@@ -46,7 +46,7 @@ class Session
     public $time_reference = 'time';
     public $gc_probability = 5;
     public $userdata = array();
-    public $CI;
+    protected $CI;
     public $now;
 
     /**
@@ -99,13 +99,13 @@ class Session
         }
 
         // Are we using a database?  If so, load it
-        if ($this->sess_use_database === true AND $this->sess_table_name != '') {
+        if ($this->sess_use_database === true && $this->sess_table_name != '') {
             $this->CI->load->database();
         }
 
         // Set the "now" time.  Can either be GMT or server time, based on the
         // config prefs.  We use this to set the "last activity" time
-        $this->now = $this->_get_time();
+        $this->now = $this->getTime();
 
         // Set the session length. If the session expiration is
         // set to zero we'll set the expiration two years from now.
@@ -118,20 +118,20 @@ class Session
 
         // Run the Session routine. If a session doesn't exist we'll
         // create a new one.  If it does, we'll update it.
-        if (!$this->sess_read()) {
-            $this->sess_create();
+        if (!$this->sessRead()) {
+            $this->sessCreate();
         } else {
-            $this->sess_update();
+            $this->sessUpdate();
         }
 
         // Delete 'old' flashdata (from last request)
-        $this->_flashdata_sweep();
+        $this->flashdataSweep();
 
         // Mark all new flashdata as old (data will be deleted before next request)
-        $this->_flashdata_mark();
+        $this->flashdataMark();
 
         // Delete expired sessions if necessary
-        $this->_sess_gc();
+        $this->sessGc();
 
         \CI\Core\log_message('debug', "Session routines successfully run");
     }
@@ -144,7 +144,7 @@ class Session
      * @access  public
      * @return  bool
      */
-    public function sess_read()
+    public function sessRead()
     {
         // Fetch the cookie
         $session = $this->CI->input->cookie($this->sess_cookie_name);
@@ -160,7 +160,7 @@ class Session
             $session = $this->CI->encrypt->decode($session);
         } else {
             // encryption was not used, so we need to check the md5 hash
-            $hash = substr($session, strlen($session) - 32); // get last 32 chars
+            $hash    = substr($session, strlen($session) - 32); // get last 32 chars
             $session = substr($session, 0, strlen($session) - 32);
 
             // Does the md5 hash match?  This is to prevent manipulation of session data in userspace
@@ -169,41 +169,42 @@ class Session
                     'error',
                     'The session cookie data did not match what was expected. This could be a possible hacking attempt.'
                 );
-                $this->sess_destroy();
+                $this->sessDestroy();
                 return false;
             }
         }
 
         // Unserialize the session array
-        $session = $this->_unserialize($session);
+        $session = $this->unserialize($session);
 
         // Is the session data we unserialized an array with the correct format?
-        if (!is_array(
-                $session
-            ) OR !isset($session['session_id']) OR !isset($session['ip_address']) OR !isset($session['userAgent']) OR !isset($session['last_activity'])
+        if (!is_array($session)
+            || !isset($session['session_id'])
+            || !isset($session['ip_address'])
+            || !isset($session['userAgent'])
+            || !isset($session['last_activity'])
         ) {
-            $this->sess_destroy();
+            $this->sessDestroy();
             return false;
         }
 
         // Is the session current?
         if (($session['last_activity'] + $this->sess_expiration) < $this->now) {
-            $this->sess_destroy();
+            $this->sessDestroy();
             return false;
         }
 
         // Does the IP Match?
-        if ($this->sess_match_ip == true AND $session['ip_address'] != $this->CI->input->ipAddress()) {
-            $this->sess_destroy();
+        if ($this->sess_match_ip == true && $session['ip_address'] != $this->CI->input->ipAddress()) {
+            $this->sessDestroy();
             return false;
         }
 
         // Does the User Agent Match?
-        if ($this->sess_match_useragent == true AND trim($session['userAgent']) != trim(
-                substr($this->CI->input->userAgent(), 0, 120)
-            )
+        if ($this->sess_match_useragent == true
+            && trim($session['userAgent']) != trim(substr($this->CI->input->userAgent(), 0, 120))
         ) {
-            $this->sess_destroy();
+            $this->sessDestroy();
             return false;
         }
 
@@ -223,14 +224,14 @@ class Session
 
             // No result?  Kill it!
             if ($query->num_rows() == 0) {
-                $this->sess_destroy();
+                $this->sessDestroy();
                 return false;
             }
 
             // Is there custom data?  If so, add it to the main session array
             $row = $query->row();
-            if (isset($row->user_data) AND $row->user_data != '') {
-                $custom_data = $this->_unserialize($row->user_data);
+            if (isset($row->user_data) && $row->user_data != '') {
+                $custom_data = $this->unserialize($row->user_data);
 
                 if (is_array($custom_data)) {
                     foreach ($custom_data as $key => $val) {
@@ -255,11 +256,11 @@ class Session
      * @access  public
      * @return  void
      */
-    public function sess_write()
+    public function sessWrite()
     {
         // Are we saving custom data to the DB?  If not, all we do is update the cookie
         if ($this->sess_use_database === false) {
-            $this->_set_cookie();
+            $this->setCookie();
             return;
         }
 
@@ -281,7 +282,7 @@ class Session
             $custom_userdata = '';
         } else {
             // Serialize the custom data array so we can store it
-            $custom_userdata = $this->_serialize($custom_userdata);
+            $custom_userdata = $this->serialize($custom_userdata);
         }
 
         // Run the update query
@@ -292,9 +293,9 @@ class Session
         );
 
         // Write the cookie.  Notice that we manually pass the cookie data array to the
-        // _set_cookie() function. Normally that function will store $this->userdata, but
+        // setCookie() function. Normally that function will store $this->userdata, but
         // in this case that array contains custom data, which we do not want in the cookie.
-        $this->_set_cookie($cookie_userdata);
+        $this->setCookie($cookie_userdata);
     }
 
     // --------------------------------------------------------------------
@@ -305,7 +306,7 @@ class Session
      * @access  public
      * @return  void
      */
-    public function sess_create()
+    public function sessCreate()
     {
         $sessid = '';
         while (strlen($sessid) < 32) {
@@ -316,11 +317,11 @@ class Session
         $sessid .= $this->CI->input->ipAddress();
 
         $this->userdata = array(
-            'session_id' => md5(uniqid($sessid, true)),
-            'ip_address' => $this->CI->input->ipAddress(),
-            'userAgent' => substr($this->CI->input->userAgent(), 0, 120),
+            'session_id'    => md5(uniqid($sessid, true)),
+            'ip_address'    => $this->CI->input->ipAddress(),
+            'userAgent'     => substr($this->CI->input->userAgent(), 0, 120),
             'last_activity' => $this->now,
-            'user_data' => ''
+            'user_data'     => ''
         );
 
 
@@ -330,7 +331,7 @@ class Session
         }
 
         // Write the cookie
-        $this->_set_cookie();
+        $this->setCookie();
     }
 
     // --------------------------------------------------------------------
@@ -341,7 +342,7 @@ class Session
      * @access  public
      * @return  void
      */
-    public function sess_update()
+    public function sessUpdate()
     {
         // We only update the session every five minutes by default
         if (($this->userdata['last_activity'] + $this->sess_time_to_update) >= $this->now) {
@@ -363,10 +364,10 @@ class Session
         $new_sessid = md5(uniqid($new_sessid, true));
 
         // Update the session data in the session data array
-        $this->userdata['session_id'] = $new_sessid;
+        $this->userdata['session_id']    = $new_sessid;
         $this->userdata['last_activity'] = $this->now;
 
-        // _set_cookie() will handle this for us if we aren't using database sessions
+        // setCookie() will handle this for us if we aren't using database sessions
         // by pushing all userdata to the cookie.
         $cookie_data = null;
 
@@ -388,7 +389,7 @@ class Session
         }
 
         // Write the cookie
-        $this->_set_cookie($cookie_data);
+        $this->setCookie($cookie_data);
     }
 
     // --------------------------------------------------------------------
@@ -399,7 +400,7 @@ class Session
      * @access  public
      * @return  void
      */
-    public function sess_destroy()
+    public function sessDestroy()
     {
         // Kill the session DB row
         if ($this->sess_use_database === true && isset($this->userdata['session_id'])) {
@@ -427,7 +428,7 @@ class Session
      * Fetch a specific item from the session array
      *
      * @access  public
-     * @param  string
+     * @param  string $item
      * @return  string
      */
     public function userdata($item)
@@ -443,7 +444,7 @@ class Session
      * @access  public
      * @return  array
      */
-    public function all_userdata()
+    public function allUserdata()
     {
         return $this->userdata;
     }
@@ -454,11 +455,11 @@ class Session
      * Add or change data in the "userdata" array
      *
      * @access  public
-     * @param  mixed
-     * @param  string
+     * @param  mixed  $newdata
+     * @param  string $newval
      * @return  void
      */
-    public function set_userdata($newdata = array(), $newval = '')
+    public function setUserdata($newdata = array(), $newval = '')
     {
         if (is_string($newdata)) {
             $newdata = array($newdata => $newval);
@@ -470,7 +471,7 @@ class Session
             }
         }
 
-        $this->sess_write();
+        $this->sessWrite();
     }
 
     // --------------------------------------------------------------------
@@ -478,10 +479,11 @@ class Session
     /**
      * Delete a session variable from the "userdata" array
      *
-     * @access  array
+     * @access  public
+     * @param array $newdata
      * @return  void
      */
-    public function unset_userdata($newdata = array())
+    public function unsetUserdata($newdata = array())
     {
         if (is_string($newdata)) {
             $newdata = array($newdata => '');
@@ -493,7 +495,7 @@ class Session
             }
         }
 
-        $this->sess_write();
+        $this->sessWrite();
     }
 
     // ------------------------------------------------------------------------
@@ -503,11 +505,11 @@ class Session
      * until the next request
      *
      * @access  public
-     * @param  mixed
-     * @param  string
+     * @param  mixed $newdata
+     * @param  string $newval
      * @return  void
      */
-    public function set_flashdata($newdata = array(), $newval = '')
+    public function setFlashdata($newdata = array(), $newval = '')
     {
         if (is_string($newdata)) {
             $newdata = array($newdata => $newval);
@@ -516,7 +518,7 @@ class Session
         if (count($newdata) > 0) {
             foreach ($newdata as $key => $val) {
                 $flashdata_key = $this->flashdata_key . ':new:' . $key;
-                $this->set_userdata($flashdata_key, $val);
+                $this->setUserdata($flashdata_key, $val);
             }
         }
     }
@@ -530,17 +532,17 @@ class Session
      * @param  string
      * @return  void
      */
-    public function keep_flashdata($key)
+    public function keepFlashdata($key)
     {
         // 'old' flashdata gets removed.  Here we mark all
-        // flashdata as 'new' to preserve it from _flashdata_sweep()
+        // flashdata as 'new' to preserve it from flashdataSweep()
         // Note the function will return FALSE if the $key
         // provided cannot be found
         $old_flashdata_key = $this->flashdata_key . ':old:' . $key;
-        $value = $this->userdata($old_flashdata_key);
+        $value             = $this->userdata($old_flashdata_key);
 
         $new_flashdata_key = $this->flashdata_key . ':new:' . $key;
-        $this->set_userdata($new_flashdata_key, $value);
+        $this->setUserdata($new_flashdata_key, $value);
     }
 
     // ------------------------------------------------------------------------
@@ -562,20 +564,20 @@ class Session
 
     /**
      * Identifies flashdata as 'old' for removal
-     * when _flashdata_sweep() runs.
+     * when flashdataSweep() runs.
      *
      * @access  private
      * @return  void
      */
-    public function _flashdata_mark()
+    protected function flashdataMark()
     {
-        $userdata = $this->all_userdata();
+        $userdata = $this->allUserdata();
         foreach ($userdata as $name => $value) {
             $parts = explode(':new:', $name);
             if (is_array($parts) && count($parts) === 2) {
                 $new_name = $this->flashdata_key . ':old:' . $parts[1];
-                $this->set_userdata($new_name, $value);
-                $this->unset_userdata($name);
+                $this->setUserdata($new_name, $value);
+                $this->unsetUserdata($name);
             }
         }
     }
@@ -589,12 +591,12 @@ class Session
      * @return  void
      */
 
-    public function _flashdata_sweep()
+    private function flashdataSweep()
     {
-        $userdata = $this->all_userdata();
+        $userdata = $this->allUserdata();
         foreach ($userdata as $key => $value) {
             if (strpos($key, ':old:')) {
-                $this->unset_userdata($key);
+                $this->unsetUserdata($key);
             }
         }
 
@@ -608,10 +610,10 @@ class Session
      * @access  private
      * @return  string
      */
-    public function _get_time()
+    private  function getTime()
     {
         if (strtolower($this->time_reference) == 'gmt') {
-            $now = time();
+            $now  = time();
             $time = mktime(
                 gmdate("H", $now),
                 gmdate("i", $now),
@@ -633,16 +635,17 @@ class Session
      * Write the session cookie
      *
      * @access  public
+     * @param $cookie_data
      * @return  void
      */
-    public function _set_cookie($cookie_data = null)
+    public function setCookie($cookie_data = null)
     {
         if (is_null($cookie_data)) {
             $cookie_data = $this->userdata;
         }
 
         // Serialize the userdata for the cookie
-        $cookie_data = $this->_serialize($cookie_data);
+        $cookie_data = $this->serialize($cookie_data);
 
         if ($this->sess_encrypt_cookie == true) {
             $cookie_data = $this->CI->encrypt->encode($cookie_data);
@@ -673,10 +676,10 @@ class Session
      * marker, so when it gets unserialized the slashes will be preserved
      *
      * @access  private
-     * @param  array
+     * @param  array $data
      * @return  string
      */
-    public function _serialize($data)
+    private function serialize($data)
     {
         if (is_array($data)) {
             foreach ($data as $key => $val) {
@@ -702,10 +705,10 @@ class Session
      * temporary slash markers back to actual slashes
      *
      * @access  private
-     * @param  array
+     * @param  array $data
      * @return  string
      */
-    public function _unserialize($data)
+    private function unserialize($data)
     {
         $data = @unserialize(strip_slashes($data));
 
@@ -733,7 +736,7 @@ class Session
      * @access  public
      * @return  void
      */
-    public function _sess_gc()
+    public function sessGc()
     {
         if ($this->sess_use_database != true) {
             return;
