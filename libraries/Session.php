@@ -429,7 +429,7 @@ class Session
      *
      * @access  public
      * @param  string $item
-     * @return  string
+     * @return  mixed
      */
     public function userdata($item)
     {
