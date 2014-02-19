@@ -128,11 +128,11 @@ class Loader
      */
     public function __construct()
     {
-        $this->ci_ob_level = ob_get_level();
+        $this->ci_ob_level      = ob_get_level();
         $this->ci_library_paths = array(APPPATH, BASEPATH);
-        $this->ci_helper_paths = array(APPPATH, BASEPATH);
-        $this->ci_model_paths = array(APPPATH);
-        $this->ci_view_paths = array(APPPATH . 'views/' => true);
+        $this->ci_helper_paths  = array(APPPATH, BASEPATH);
+        $this->ci_model_paths   = array(APPPATH);
+        $this->ci_view_paths    = array(APPPATH . 'views/' => true);
 
         spl_autoload_register(array($this, 'businessAutoload'));
 
@@ -141,7 +141,14 @@ class Loader
 
     protected static function businessAutoload($class)
     {
-        $file = realpath(APPPATH) . '/business/' . $class . '.php';
+        if (stripos($class, 'business') !== 0) {
+            return false;
+        }
+
+        $path = explode('\\', $class);
+        array_shift($path);
+
+        $file = realpath(APPPATH) . '/business/' . implode('/', $path) . '.php';
         if (file_exists($file)) {
             require $file;
         }
@@ -159,10 +166,10 @@ class Loader
      */
     public function initialize()
     {
-        $this->ci_classes = array();
+        $this->ci_classes      = array();
         $this->ci_loaded_files = array();
-        $this->ci_models = array();
-        $this->base_classes =& is_loaded();
+        $this->ci_models       = array();
+        $this->base_classes    =& is_loaded();
 
         $this->ciAutoloader();
 
@@ -207,6 +214,7 @@ class Loader
      */
     public function library($library = '', $params = null, $object_name = null)
     {
+
         if (is_array($library)) {
             foreach ($library as $class) {
                 $this->library($class, $params);
@@ -314,8 +322,8 @@ class Loader
      * Database Loader
      *
      * @param  string $params the DB credentials
-     * @param  bool $return whether to return the DB object
-     * @param  bool $active_record whether to enable active record (this allows us to override the config setting)
+     * @param  bool   $return whether to return the DB object
+     * @param  bool   $active_record whether to enable active record (this allows us to override the config setting)
      * @return  void|object
      */
     public function database($params = '', $return = false, $active_record = null)
@@ -491,7 +499,7 @@ class Loader
                 continue;
             }
 
-            $ext_helper = APPPATH . 'helpers/' . config_item('subclass_prefix') . $helper . '.php';
+            $ext_helper = APPPATH . 'helpers/' . $helper . '.php';
 
             // Is this a helper extension request?
             if (file_exists($ext_helper)) {
@@ -589,7 +597,7 @@ class Loader
      * Loads a driver library
      *
      * @param  string $library the name of the class
-     * @param  mixed $params the optional parameters
+     * @param  mixed  $params the optional parameters
      * @param  string $object_name an optional object name
      * @return  mixed
      */
@@ -664,7 +672,7 @@ class Loader
      * If no path is provided, the most recently added path is removed.
      *
      * @param  string $path
-     * @param  bool
+     * @param         bool
      * @return  void
      */
     public function removePackagePath($path = '')
@@ -697,10 +705,10 @@ class Loader
 
         // make sure the application default paths are still in the array
         $this->ci_library_paths = array_unique(array_merge($this->ci_library_paths, array(APPPATH, BASEPATH)));
-        $this->ci_helper_paths = array_unique(array_merge($this->ci_helper_paths, array(APPPATH, BASEPATH)));
-        $this->ci_model_paths = array_unique(array_merge($this->ci_model_paths, array(APPPATH)));
-        $this->ci_view_paths = array_merge($this->ci_view_paths, array(APPPATH . 'views/' => true));
-        $config->config_paths = array_unique(array_merge($config->config_paths, array(APPPATH)));
+        $this->ci_helper_paths  = array_unique(array_merge($this->ci_helper_paths, array(APPPATH, BASEPATH)));
+        $this->ci_model_paths   = array_unique(array_merge($this->ci_model_paths, array(APPPATH)));
+        $this->ci_view_paths    = array_merge($this->ci_view_paths, array(APPPATH . 'views/' => true));
+        $config->config_paths   = array_unique(array_merge($config->config_paths, array(APPPATH)));
     }
 
     // --------------------------------------------------------------------
@@ -717,6 +725,11 @@ class Loader
      */
     protected function ciLoad($_ci_data)
     {
+        $_ci_path   = null;
+        $_ci_view   = null;
+        $_ci_return = null;
+        $_ci_vars   = null;
+
         // Set the default data variables
         foreach (array('_ci_view', '_ci_vars', '_ci_path', '_ci_return') as $_ci_val) {
             $$_ci_val = (!isset($_ci_data[$_ci_val])) ? false : $_ci_data[$_ci_val];
@@ -726,15 +739,15 @@ class Loader
 
         // Set the path to the requested file
         if ($_ci_path != '') {
-            $_ci_x = explode('/', $_ci_path);
+            $_ci_x    = explode('/', $_ci_path);
             $_ci_file = end($_ci_x);
         } else {
-            $_ci_ext = pathinfo($_ci_view, PATHINFO_EXTENSION);
+            $_ci_ext  = pathinfo($_ci_view, PATHINFO_EXTENSION);
             $_ci_file = ($_ci_ext == '') ? $_ci_view . '.php' : $_ci_view;
 
             foreach ($this->ci_view_paths as $view_file => $cascade) {
                 if (file_exists($view_file . $_ci_file)) {
-                    $_ci_path = $view_file . $_ci_file;
+                    $_ci_path    = $view_file . $_ci_file;
                     $file_exists = true;
                     break;
                 }
@@ -792,10 +805,10 @@ class Loader
 
         if ((bool)@ini_get('short_open_tag') === false && config_item('rewrite_short_tags') == true) {
             echo eval('?>' . preg_replace(
-                "/;*\s*\?>/",
-                "; ?>",
-                str_replace('<?=', '<?php echo ', file_get_contents($_ci_path))
-            ));
+                    "/;*\s*\?>/",
+                    "; ?>",
+                    str_replace('<?=', '<?php echo ', file_get_contents($_ci_path))
+                ));
         } else {
             include($_ci_path); // include() vs include_once() allows for multiple views with the same name
         }
@@ -835,7 +848,7 @@ class Loader
      * This function loads the requested class.
      *
      * @param  string $class the item that is being loaded
-     * @param  mixed $params any additional parameters
+     * @param  mixed  $params any additional parameters
      * @param  string $object_name an optional object name
      * @return  void
      */
@@ -878,7 +891,7 @@ class Loader
                     if (!is_null($object_name)) {
                         $CI =& get_instance();
                         if (!isset($CI->$object_name)) {
-                            $this->ciInitClass($class, config_item('subclass_prefix'), $params, $object_name);
+                            $this->ciInitClass($class, $params, $object_name);
                             return;
                         }
                     }
@@ -891,7 +904,7 @@ class Loader
                 include_once($subclass);
                 $this->ci_loaded_files[] = $subclass;
 
-                $this->ciInitClass($class, config_item('subclass_prefix'), $params, $object_name);
+                $this->ciInitClass($class, $params, $object_name);
                 return;
             }
 
@@ -949,14 +962,14 @@ class Loader
 
     /**
      * Instantiates a class
-     *
+     * @todo Prefix replace namespaces ?
      * @param  string $class
-     * @param  string $prefix
-     * @param  bool $config
+     *
+     * @param  bool   $config
      * @param  string $object_name an optional object name
      * @return void
      */
-    protected function ciInitClass($class, $prefix = '', $config = false, $object_name = null)
+    protected function ciInitClass($class, $config = false, $object_name = null)
     {
         // Is there an associated config file for this class?  Note: these should always be lowercase
         if ($config === null) {
@@ -996,17 +1009,14 @@ class Loader
             }
         }
 
-        if ($prefix == '') {
-            if (class_exists('CI\Libraries\\' . $class, false)) {
-                $name = 'CI\Libraries\\' . $class;
-            } elseif (class_exists(config_item('subclass_namespace') . 'Libraries\\' . $class, false)) {
-                $name = config_item('subclass_namespace') . 'Libraries\\' . $class;
-            } else {
-                $name = $class;
-            }
+        if (class_exists(config_item('subclass_namespace') . 'Libraries\\' . $class, false)) {
+            $name = config_item('subclass_namespace') . 'Libraries\\' . $class;
+        } elseif (class_exists('CI\Libraries\\' . $class, false)) {
+            $name = 'CI\Libraries\\' . $class;
         } else {
-            $name = $prefix . $class;
+            $name = $class;
         }
+
 
         // Is the class name valid?
         if (!class_exists($name, false)) {
@@ -1143,7 +1153,7 @@ class Loader
      *
      * This function preps the name of various items to make loading them more reliable.
      *
-     * @param  mixed $filename
+     * @param  mixed  $filename
      * @param  string $extension
      * @return  array
      */
