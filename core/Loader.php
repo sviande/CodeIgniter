@@ -134,21 +134,21 @@ class Loader
         $this->ci_model_paths   = array(APPPATH);
         $this->ci_view_paths    = array(APPPATH . 'views/' => true);
 
-        spl_autoload_register(array($this, 'businessAutoload'));
+        spl_autoload_register(array($this, 'brainAutoload'));
 
         log_message('debug', "Loader Class Initialized");
     }
 
-    protected static function businessAutoload($class)
+    protected static function brainAutoload($class)
     {
-        if (stripos($class, 'business') !== 0) {
+        if (stripos($class, 'brain') !== 0) {
             return false;
         }
 
         $path = explode('\\', $class);
         array_shift($path);
 
-        $file = realpath(APPPATH) . '/business/' . implode('/', $path) . '.php';
+        $file = realpath(APPPATH) . '/brain/' . implode('/', $path) . '.php';
         if (file_exists($file)) {
             require $file;
         }
