@@ -1,19 +1,22 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP 5.1.6 or newer
- *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
- * @filesource
- */
+<?php
+namespace CI\Core;
+
+    /**
+     * CodeIgniter
+     *
+     * An open source application development framework for PHP 5.1.6 or newer
+     *
+     * @package    CodeIgniter
+     * @author    ExpressionEngine Dev Team
+     * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+     * @license    http://codeigniter.com/user_guide/license.html
+     * @link    http://codeigniter.com
+     * @since    Version 1.0
+     * @filesource
+     */
 
 // ------------------------------------------------------------------------
+
 
 /**
  * CodeIgniter Application Controller Class
@@ -21,86 +24,86 @@
  * This class object is the super class that every library in
  * CodeIgniter will be assigned to.
  *
- * @package		CodeIgniter
- * @subpackage	Libraries
- * @category	Libraries
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/general/controllers.html
+ * @package    CodeIgniter
+ * @subpackage  Libraries
+ * @category  Libraries
+ * @author    ExpressionEngine Dev Team
+ * @link    http://codeigniter.com/user_guide/general/controllers.html
  *
- * @property CI_DB_active_record $db              This is the platform-independent base Active Record implementation class.
- * @property CI_DB_forge $dbforge                 Database Utility Class
- * @property CI_Benchmark $benchmark              This class enables you to mark points and calculate the time difference between them.<br />  Memory consumption can also be displayed.
- * @property CI_Calendar $calendar                This class enables the creation of calendars
- * @property CI_Cart $cart                        Shopping Cart Class
- * @property CI_Config $config                    This class contains functions that enable config files to be managed
- * @property CI_Controller $controller            This class object is the super class that every library in.<br />CodeIgniter will be assigned to.
- * @property CI_Email $email                      Permits email to be sent using Mail, Sendmail, or SMTP.
- * @property CI_Encrypt $encrypt                  Provides two-way keyed encoding using XOR Hashing and Mcrypt
- * @property CI_Exceptions $exceptions            Exceptions Class
- * @property CI_Form_validation $form_validation  Form Validation Class
- * @property CI_Ftp $ftp                          FTP Class
- * @property CI_Hooks $hooks                      //dead
- * @property CI_Image_lib $image_lib              Image Manipulation class
- * @property CI_Input $input                      Pre-processes global input data for security
- * @property CI_Lang $lang                        Language Class
- * @property CI_Loader $load                      Loads views and files
- * @property CI_Log $log                          Logging Class
- * @property CI_Model $model                      CodeIgniter Model Class
- * @property CI_Output $output                    Responsible for sending final output to browser
- * @property CI_Pagination $pagination            Pagination Class
- * @property CI_Parser $parser                    Parses pseudo-variables contained in the specified template view,<br />replacing them with the data in the second param
- * @property CI_Profiler $profiler                This class enables you to display benchmark, query, and other data<br />in order to help with debugging and optimization.
- * @property CI_Router $router                    Parses URIs and determines routing
- * @property CI_Session $session                  Session Class
- * @property CI_Sha1 $sha1                        Provides 160 bit hashing using The Secure Hash Algorithm
- * @property CI_Table $table                      HTML table generation<br />Lets you create tables manually or from database result objects, or arrays.
- * @property CI_Trackback $trackback              Trackback Sending/Receiving Class
- * @property CI_Typography $typography            Typography Class
- * @property CI_Unit_test $unit_test              Simple testing class
- * @property CI_Upload $upload                    File Uploading Class
- * @property CI_URI $uri                          Parses URIs and determines routing
- * @property CI_User_agent $user_agent            Identifies the platform, browser, robot, or mobile devise of the browsing agent
- * @property CI_Validation $validation            //dead
- * @property CI_Xmlrpc $xmlrpc                    XML-RPC request handler class
- * @property CI_Xmlrpcs $xmlrpcs                  XML-RPC server class
- * @property CI_Zip $zip                          Zip Compression Class
- * @property CI_Javascript $javascript            Javascript Class
- * @property CI_Jquery $jquery                    Jquery Class
- * @property CI_Utf8 $utf8                        Provides support for UTF-8 environments
- * @property CI_Security $security                Security Class, xss, csrf, etc...
- * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
- * @property CI_Cache $cache                      CodeIgniter Caching Class
+ * @property \CI\DB\ActiveRecord                                                                 $db
+ * @property \CI\DB\Forge                                                                        $dbforge
+ * @property Benchmark                                                                           $benchmark
+ * @property \CI\Libraries\Calendar                                                              $calendar
+ * @property \CI\Libraries\Cart                                                                  $cart
+ * @property Config                                                                              $config
+ * @property Controller                                                                          $controller
+ * @property \CI\Libraries\Email                                                                 $email
+ * @property \CI\Libraries\Encrypt                                                               $encrypt
+ * @property Exceptions                                                                          $exceptions
+ * @property \CI\Libraries\FormValidation                                                        $formvalidation
+ * @property Ftp                                                                                 $ftp
+ * @property Hooks                                                                               $hooks
+ * @property Image_lib                                                                           $image_lib
+ * @property Input                                                                               $input
+ * @property Lang                                                                                $lang
+ * @property Loader                                                                              $load
+ * @property Log                                                                                 $log
+ * @property Model                                                                               $model
+ * @property Output                                                                              $output
+ * @property Pagination                                                                          $pagination
+ * @property Parser                                                                              $parser
+ * @property \CI\Libraries\Profiler                                                              $profiler
+ * @property Router                                                                              $router
+ * @property \CI\Libraries\Session                                                               $session
+ * @property Sha1                                                                                $sha1
+ * @property Table                                                                               $table
+ * @property Trackback                                                                           $trackback
+ * @property Typography                                                                          $typography
+ * @property Unit_test                                                                           $unit_test
+ * @property Upload                                                                              $upload
+ * @property URI                                                                                 $uri
+ * @property User_agent                                                                          $userAgent
+ * @property Validation                                                                          $validation
+ * @property Xmlrpc                                                                              $xmlrpc
+ * @property Xmlrpcs                                                                             $xmlrpcs
+ * @property Zip                                                                                 $zip
+ * @property Javascript                                                                          $javascript
+ * @property Jquery                                                                              $jquery
+ * @property Utf8                                                                                $utf8
+ * @property Security                                                                            $security
+ * @property Driver_Library                                                                      $driver
+ * @property Cache                                                                               $cache
  */
-class CI_Controller {
+class Controller
+{
 
-	private static $instance;
+    private static $instance;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		self::$instance =& $this;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        self::$instance =& $this;
 
-		// Assign all the class objects that were instantiated by the
-		// bootstrap file (CodeIgniter.php) to local class variables
-		// so that CI can run as one big super object.
-		foreach (is_loaded() as $var => $class)
-		{
-			$this->$var =& load_class($class);
-		}
+        // Assign all the class objects that were instantiated by the
+        // bootstrap file (CodeIgniter.php) to local class variables
+        // so that CI can run as one big super object.
+        foreach (is_loaded() as $var => $class) {
+            $this->$var =& load_class($class);
+        }
 
-		$this->load =& load_class('Loader', 'core');
+        $this->load =& load_class('Loader', 'core');
 
-		$this->load->initialize();
+        $this->load->initialize();
 
-		log_message('debug', "Controller Class Initialized");
-	}
+        log_message('debug', "Controller Class Initialized");
+    }
 
-	public static function &get_instance()
-	{
-		return self::$instance;
-	}
+    public static function &getInstance()
+    {
+        return self::$instance;
+    }
 }
 // END Controller class
 
