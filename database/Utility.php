@@ -1,7 +1,6 @@
 <?php
-namespace CI\database;
+namespace CI\Database;
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Code Igniter
@@ -19,14 +18,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 // ------------------------------------------------------------------------
 
+
 /**
  * Database Utility Class
  *
  * @category	Database
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/database/
+ *
+ * @property Driver $db
  */
-class DB_utility extends CI_DB_forge
+class Utility extends \CI\DB\Forge
 {
     public $db;
     public $data_cache		= array();
@@ -40,10 +42,10 @@ class DB_utility extends CI_DB_forge
     public function __construct()
     {
         // Assign the main database object to $this->db
-        $CI =& \CI\get_instance();
+        $CI =& \CI\Core\get_instance();
         $this->db =& $CI->db;
 
-        log_message('debug', "Database Utility Class Initialized");
+        \CI\Core\log_message('debug', "Database Utility Class Initialized");
     }
 
     // --------------------------------------------------------------------
@@ -131,7 +133,7 @@ class DB_utility extends CI_DB_forge
     public function optimize_database()
     {
         $result = array();
-        foreach ($this->db->list_tables() as $table_name) {
+        foreach ($this->db->listTables() as $table_name) {
             $sql = $this->_optimize_table($table_name);
 
             if (is_bool($sql)) {
@@ -194,7 +196,7 @@ class DB_utility extends CI_DB_forge
      */
     public function csv_from_result($query, $delim = ",", $newline = "\n", $enclosure = '"')
     {
-        if ( ! is_object($query) OR ! method_exists($query, 'list_fields')) {
+        if ( ! is_object($query) OR ! method_exists($query, 'listFields')) {
             show_error('You must submit a valid result object');
         }
 
@@ -232,7 +234,7 @@ class DB_utility extends CI_DB_forge
      */
     public function xml_from_result($query, $params = array())
     {
-        if ( ! is_object($query) OR ! method_exists($query, 'list_fields')) {
+        if ( ! is_object($query) OR ! method_exists($query, 'listFields')) {
             show_error('You must submit a valid result object');
         }
 
@@ -327,7 +329,7 @@ class DB_utility extends CI_DB_forge
         OR ($prefs['format'] == 'zip'  AND ! @function_exists('gzcompress')))
         {
             if ($this->db->db_debug) {
-                return $this->db->display_error('db_unsuported_compression');
+                return $this->db->displayError('db_unsuported_compression');
             }
 
             $prefs['format'] = 'txt';

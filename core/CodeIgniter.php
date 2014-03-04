@@ -375,7 +375,7 @@ $EXT->callHook('post_system');
  *  Close the DB connection if one exists
  * ------------------------------------------------------
  */
-if (class_exists('CI_DB', false) && isset($CI->db)) {
+if (class_exists('CI\DB\ActiveRecord', false) && isset($CI->db)) {
     $CI->db->close();
 }
 

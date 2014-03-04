@@ -62,7 +62,7 @@ class Benchmark
      * Calculates the time difference between two marked points.
      *
      * If the first parameter is empty this function instead returns the
-     * {elapsed_time} pseudo-variable. This permits the full system
+     * {elapsedTime} pseudo-variable. This permits the full system
      * execution time to be shown in a template. The output class will
      * swap the real value for this variable.
      *
@@ -75,7 +75,7 @@ class Benchmark
     public function elapsedTime($point1 = '', $point2 = '', $decimals = 4)
     {
         if ($point1 == '') {
-            return '{elapsed_time}';
+            return '{elapsedTime}';
         }
 
         if (!isset($this->marker[$point1])) {

@@ -157,7 +157,7 @@ class CI_DB_postgre_forge extends CI_DB_forge
         }
 
         if (count($primary_keys) > 0) {
-            // Something seems to break when passing an array to _protect_identifiers()
+            // Something seems to break when passing an array to protect_identifiers()
             foreach ($primary_keys as $index => $key) {
                 $primary_keys[$index] = $this->db->_protect_identifiers($key);
             }

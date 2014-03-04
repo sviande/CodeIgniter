@@ -244,7 +244,7 @@ class Loader
      * @param  string $model the name of the class
      * @param  string $name name for the model
      * @param  bool   $db_conn database connection
-     * @return  void
+     * @return \CI\Core\Model
      */
     public function model($model, $name = '', $db_conn = false)
     {
@@ -278,6 +278,7 @@ class Loader
             return;
         }
 
+
         $CI =& get_instance();
         if (isset($CI->$name)) {
             show_error('The model name you are loading is the name of a resource that is already being used: ' . $name);
@@ -290,7 +291,7 @@ class Loader
                 continue;
             }
 
-            if ($db_conn !== false && !class_exists('CI_DB', false)) {
+            if ($db_conn !== false && !class_exists('\\CI\\Databse\\ActiveRecord', false)) {
                 if ($db_conn === true) {
                     $db_conn = '';
                 }
@@ -298,18 +299,18 @@ class Loader
                 $CI->load->database($db_conn, false, true);
             }
 
-            if (!class_exists('CI_Model', false)) {
+            if (!class_exists('\\CI\\Core\\Model', false)) {
                 load_class('Model', 'core');
             }
 
             require_once($mod_path . 'models/' . $path . $model . '.php');
 
-            $model = ucfirst($model);
+            $model = config_item('app_namespace').'Model\\'.ucfirst($name);
 
-            $CI->$name = new $model();
+            $CI->{$name.'_model'} = new $model();
 
             $this->ci_models[] = $name;
-            return;
+            return $CI->{$name.'_model'};
         }
 
         // couldn't find the model
@@ -332,7 +333,7 @@ class Loader
         $CI =& get_instance();
 
         // Do we even need to load the database class?
-        if (class_exists('CI_DB', false)
+        if (class_exists('CI\\Database\\ActivRecord', false)
             && $return == false && $active_record == null && isset($CI->db) && is_object($CI->db)
         ) {
             return false;
@@ -341,7 +342,7 @@ class Loader
         require_once(BASEPATH . 'database/DB.php');
 
         if ($return === true) {
-            return DB($params, $active_record);
+            return \CI\Database\DB($params, $active_record);
         }
 
         // Initialize the db variable.  Needed to prevent
@@ -349,7 +350,7 @@ class Loader
         $CI->db = '';
 
         // Load the DB class
-        $CI->db =& DB($params, $active_record);
+        $CI->db =& \CI\Database\DB($params, $active_record);
     }
 
     // --------------------------------------------------------------------
@@ -1009,8 +1010,8 @@ class Loader
             }
         }
 
-        if (class_exists(config_item('subclass_namespace') . 'Libraries\\' . $class, false)) {
-            $name = config_item('subclass_namespace') . 'Libraries\\' . $class;
+        if (class_exists(config_item('app_namespace') . 'Libraries\\' . $class, false)) {
+            $name = config_item('app_namespace') . 'Libraries\\' . $class;
         } elseif (class_exists('CI\Libraries\\' . $class, false)) {
             $name = 'CI\Libraries\\' . $class;
         } else {

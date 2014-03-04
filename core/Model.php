@@ -26,8 +26,8 @@ namespace CI\Core;
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/config.html
  *
- * @property \CI\DB\ActiveRecord                                                   $db
- * @property \CI\DB\Forge                                                          $dbforge
+ * @property \CI\Database\ActiveRecord                                                   $db
+ * @property \CI\Database\Forge                                                          $dbforge
  * @property Benchmark                                                             $benchmark
  * @property \CI\Libraries\Calendar                                                $calendar
  * @property \CI\Libraries\Cart                                                    $cart

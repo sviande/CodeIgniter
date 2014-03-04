@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI\Database\Mysqli;
+
 /**
  * CodeIgniter
  *
@@ -13,10 +15,10 @@
  * @filesource
  */
 
-// --------------------------------------------------------------------
+// ------------------------------------------------------------------------
 
 /**
- * MySQL Result Class
+ * MySQLi Result Class
  *
  * This class extends the parent result class: CI_DB_result
  *
@@ -24,7 +26,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
-class CI_DB_mysql_result extends CI_DB_result
+class Result extends \CI\Database\Result
 {
     /**
      * Number of rows in the result set
@@ -34,7 +36,7 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function num_rows()
     {
-        return @mysql_num_rows($this->result_id);
+        return @mysqli_num_rows($this->result_id);
     }
 
     // --------------------------------------------------------------------
@@ -47,7 +49,7 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function num_fields()
     {
-        return @mysql_num_fields($this->result_id);
+        return @mysqli_num_fields($this->result_id);
     }
 
     // --------------------------------------------------------------------
@@ -63,7 +65,7 @@ class CI_DB_mysql_result extends CI_DB_result
     public function list_fields()
     {
         $field_names = array();
-        while ($field = mysql_fetch_field($this->result_id)) {
+        while ($field = mysqli_fetch_field($this->result_id)) {
             $field_names[] = $field->name;
         }
 
@@ -83,7 +85,7 @@ class CI_DB_mysql_result extends CI_DB_result
     public function field_data()
     {
         $retval = array();
-        while ($field = mysql_fetch_object($this->result_id)) {
+        while ($field = mysqli_fetch_object($this->result_id)) {
             preg_match('/([a-zA-Z]+)(\(\d+\))?/', $field->Type, $matches);
 
             $type = (array_key_exists(1, $matches)) ? $matches[1] : NULL;
@@ -111,8 +113,8 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function free_result()
     {
-        if (is_resource($this->result_id)) {
-            mysql_free_result($this->result_id);
+        if (is_object($this->result_id)) {
+            mysqli_free_result($this->result_id);
             $this->result_id = FALSE;
         }
     }
@@ -131,7 +133,7 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function _data_seek($n = 0)
     {
-        return mysql_data_seek($this->result_id, $n);
+        return mysqli_data_seek($this->result_id, $n);
     }
 
     // --------------------------------------------------------------------
@@ -146,7 +148,7 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function _fetch_assoc()
     {
-        return mysql_fetch_assoc($this->result_id);
+        return mysqli_fetch_assoc($this->result_id);
     }
 
     // --------------------------------------------------------------------
@@ -161,11 +163,11 @@ class CI_DB_mysql_result extends CI_DB_result
      */
     public function _fetch_object()
     {
-        return mysql_fetch_object($this->result_id);
+        return mysqli_fetch_object($this->result_id);
     }
 
 }
 
 
-/* End of file mysql_result.php */
-/* Location: ./system/database/drivers/mysql/mysql_result.php */
+/* End of file mysqli_result.php */
+/* Location: ./system/database/drivers/mysqli/mysqli_result.php */

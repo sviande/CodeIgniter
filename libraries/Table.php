@@ -370,7 +370,7 @@ class CI_Table
 
         // First generate the headings from the table column names
         if (count($this->heading) == 0) {
-            if (!method_exists($query, 'list_fields')) {
+            if (!method_exists($query, 'listFields')) {
                 return false;
             }
 

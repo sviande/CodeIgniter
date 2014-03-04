@@ -562,7 +562,7 @@ class CI_Image_lib
             $this->library_path .= 'convert';
         }
 
-        // Execute the command
+        // execute the command
         $cmd = $this->library_path . " -quality " . $this->quality;
 
         if ($action == 'crop') {

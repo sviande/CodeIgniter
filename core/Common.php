@@ -125,7 +125,7 @@ function &load_class($class, $directory = 'libraries', $namespace = null)
     $name = false;
     // Look for the class first in the local application/libraries folder
     // then in the native system/libraries folder
-    foreach (array(APPPATH, BASEPATH) as $path) {
+    foreach (array(BASEPATH, APPPATH) as $path) {
         if (file_exists($path . $directory . '/' . $class . '.php')) {
             $name = $namespace . $class;
 
@@ -139,7 +139,7 @@ function &load_class($class, $directory = 'libraries', $namespace = null)
 
     // Is the request a class extension?  If so we load it too
     if (file_exists(APPPATH . $directory . '/' . $class . '.php')) {
-        $name = config_item('subclass_namespace') . $class;
+        $name = config_item('app_namespace').ucfirst($directory).'\\'.$class;
 
         if (class_exists($name, false) === false) {
             require(APPPATH . $directory . '/' . $class . '.php');

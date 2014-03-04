@@ -1,19 +1,20 @@
 <?php
-namespace \CI\DB;
+namespace CI\Database;
 
-/**
- * CodeIgniter
- *
- * An open source application development framework for PHP 5.1.6 or newer
- *
- * @package    CodeIgniter
- * @author    ExpressionEngine Dev Team
- * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license    http://codeigniter.com/user_guide/license.html
- * @link    http://codeigniter.com
- * @since    Version 1.0
- * @filesource
- */
+
+    /**
+     * CodeIgniter
+     *
+     * An open source application development framework for PHP 5.1.6 or newer
+     *
+     * @package    CodeIgniter
+     * @author    ExpressionEngine Dev Team
+     * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+     * @license    http://codeigniter.com/user_guide/license.html
+     * @link    http://codeigniter.com
+     * @since    Version 1.0
+     * @filesource
+     */
 
 // ------------------------------------------------------------------------
 
@@ -23,32 +24,32 @@ namespace \CI\DB;
  * @category  Database
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
- * @param  string
- * @param  bool  Determines if active record should be used or not
+ * @param  string $params
+ * @return \CI\DB\ActiveRecord
  */
-function &DB($params = '', $active_record_override = null)
+function &DB($params = '')
 {
     // Load the DB config file if a DSN string wasn't passed
-    if (is_string($params) AND strpos($params, '://') === false) {
+    if (is_string($params) && strpos($params, '://') === false) {
         // Is the config file in the environment folder?
-        if (!defined('ENVIRONMENT') OR !file_exists($file_path = APPPATH . 'config/' . ENVIRONMENT . '/database.php')) {
+        if (!defined('ENVIRONMENT') || !file_exists($file_path = APPPATH . 'config/' . ENVIRONMENT . '/database.php')) {
             if (!file_exists($file_path = APPPATH . 'config/database.php')) {
-                show_error('The configuration file database.php does not exist.');
+                \CI\Core\show_error('The configuration file database.php does not exist.');
             }
         }
 
         include($file_path);
 
-        if (!isset($db) OR count($db) == 0) {
-            show_error('No database connection settings were found in the database config file.');
+        if (!isset($db) || count($db) == 0) {
+            \CI\Core\show_error('No database connection settings were found in the database config file.');
         }
 
         if ($params != '') {
             $active_group = $params;
         }
 
-        if (!isset($active_group) OR !isset($db[$active_group])) {
-            show_error('You have specified an invalid database connection group.');
+        if (!isset($active_group) || !isset($db[$active_group])) {
+            \CI\Core\show_error('You have specified an invalid database connection group.');
         }
 
         $params = $db[$active_group];
@@ -62,7 +63,7 @@ function &DB($params = '', $active_record_override = null)
          */
 
         if (($dns = @parse_url($params)) === false) {
-            show_error('Invalid DB Connection String');
+            \CI\Core\show_error('Invalid DB Connection String');
         }
 
         $params = array(
@@ -91,37 +92,17 @@ function &DB($params = '', $active_record_override = null)
     }
 
     // No DB specified yet?  Beat them senseless...
-    if (!isset($params['dbdriver']) OR $params['dbdriver'] == '') {
-        show_error('You have not selected a database type to connect to.');
+    if (!isset($params['dbdriver']) || $params['dbdriver'] == '') {
+        \CI\Core\show_error('You have not selected a database type to connect to.');
     }
 
-    // Load the DB classes.  Note: Since the active record class is optional
-    // we need to dynamically create a class that extends proper parent class
-    // based on whether we're using the active record class or not.
-    // Kudos to Paul for discovering this clever use of eval()
-
-    if ($active_record_override !== null) {
-        $active_record = $active_record_override;
-    }
-
-    require_once(BASEPATH . 'database/DB_driver.php');
-
-    if (!isset($active_record) OR $active_record == true) {
-        require_once(BASEPATH . 'database/DB_active_rec.php');
-
-        if (!class_exists('CI_DB', false)) {
-            eval('class CI_DB extends CI_DB_active_record { }');
-        }
-    } else {
-        if (!class_exists('CI_DB', false)) {
-            eval('class CI_DB extends CI_DB_driver { }');
-        }
-    }
-
-    require_once(BASEPATH . 'database/drivers/' . $params['dbdriver'] . '/' . $params['dbdriver'] . '_driver.php');
+    require_once(BASEPATH . 'database/Driver.php');
+    require_once(BASEPATH . 'database/ActiveRecord.php');
+    require_once(BASEPATH . 'database/drivers/' . $params['dbdriver'] . '/Driver.php');
 
     // Instantiate the DB adapter
-    $driver = 'CI_DB_' . $params['dbdriver'] . '_driver';
+    $driver = 'CI\\Database\\' . $params['dbdriver'] . '\\Driver';
+    /** @var \CI\Database\ActiveRecord $DB */
     $DB     = new $driver($params);
 
     if ($DB->autoinit == true) {

@@ -1,9 +1,6 @@
 <?php
-namespace CI\database;
+namespace CI\Database;
 
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
 /**
  * CodeIgniter
  *
@@ -27,11 +24,11 @@ if (!defined('BASEPATH')) {
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
  */
-class DB_cache
+class Cache
 {
 
-    public $CI;
-    public $db; // allows passing of db object so that multiple database connections and returned db objects can be supported
+    protected $CI;
+    protected $db;
 
     /**
      * Constructor
@@ -43,7 +40,7 @@ class DB_cache
     {
         // Assign the main CI object to $this->CI
         // and load the file helper since we use it a lot
-        $this->CI =& \CI\Core::get_instance();
+        $this->CI =& \CI\Core\get_instance();
         $this->db =& $db;
         $this->CI->load->helper('file');
     }

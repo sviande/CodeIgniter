@@ -1,5 +1,5 @@
 <?php
-namespace CI\DB;
+namespace CI\Database;
 
 use \CI\Core;
 
@@ -24,7 +24,7 @@ use \CI\Core;
  * @author    ExpressionEngine Dev Team
  * @link    http://codeigniter.com/user_guide/database/
  */
-class DB_forge
+class Forge
 {
 
     public $fields = array();
@@ -135,13 +135,13 @@ class DB_forge
         if (is_string($field)) {
             if ($field == 'id') {
                 $this->add_field(
-                  array(
-                    'id' => array(
-                      'type'           => 'INT',
-                      'constraint'     => 9,
-                      'auto_increment' => true
+                    array(
+                        'id' => array(
+                            'type'           => 'INT',
+                            'constraint'     => 9,
+                            'auto_increment' => true
+                        )
                     )
-                  )
                 );
                 $this->add_key('id', true);
             } else {
@@ -179,11 +179,11 @@ class DB_forge
         }
 
         $sql = $this->_create_table(
-          $this->db->dbprefix . $table,
-          $this->fields,
-          $this->primary_keys,
-          $this->keys,
-          $if_not_exists
+            $this->db->dbprefix . $table,
+            $this->fields,
+            $this->primary_keys,
+            $this->keys,
+            $if_not_exists
         );
 
         $this->_reset();

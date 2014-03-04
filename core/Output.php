@@ -80,7 +80,7 @@ class Output
      */
     protected $profiler_sections = array();
     /**
-     * Whether or not to parse variables like {elapsed_time} and {memory_usage}
+     * Whether or not to parse variables like {elapsedTime} and {memory_usage}
      *
      * @var bool
      * @access  protected
@@ -351,7 +351,7 @@ class Output
         if ($this->parse_exec_vars === true) {
             $memory = (!function_exists('memory_get_usage')) ? '0' : round(memory_get_usage() / 1024 / 1024, 2) . 'MB';
 
-            $output = str_replace('{elapsed_time}', $elapsed, $output);
+            $output = str_replace('{elapsedTime}', $elapsed, $output);
             $output = str_replace('{memory_usage}', $memory, $output);
         }
 

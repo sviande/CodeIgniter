@@ -272,7 +272,7 @@ class FormValidation
             return false;
         }
 
-        // Does the _field_data array containing the validation rules exist?
+        // Does the fieldDataStatement array containing the validation rules exist?
         // If not, we look to see if they were assigned via a config file
         if (count($this->field_data) == 0) {
             // No validation rules?  We're done...
@@ -302,7 +302,7 @@ class FormValidation
         // Cycle through the rules for each field, match the
         // corresponding $_POST item and test for errors
         foreach ($this->field_data as $field => $row) {
-            // Fetch the data from the corresponding $_POST array and cache it in the _field_data array.
+            // Fetch the data from the corresponding $_POST array and cache it in the fieldDataStatement array.
             // Depending on whether the field name is an array or a string will determine where we get it from.
 
             if ($row['is_array'] == true) {

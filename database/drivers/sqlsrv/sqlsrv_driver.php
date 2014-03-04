@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+namespace CI\Database\Sqlsrv;
+
 /**
  * CodeIgniter
  *
@@ -28,7 +30,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
-class CI_DB_sqlsrv_driver extends CI_DB
+class Driver extends \CI\Database\ActiveRecord
 {
     public $dbdriver = 'sqlsrv';
 
@@ -37,15 +39,15 @@ class CI_DB_sqlsrv_driver extends CI_DB
 
     // clause and character used for LIKE escape sequences
     public $_like_escape_str = " ESCAPE '%s' ";
-    public $_like_escape_chr = '!';
+    public $like_escape_chr = '!';
 
     /**
      * The syntax to count rows is slightly different across different
      * database engines, so this string appears in each driver and is
-     * used for the count_all() and count_all_results() functions.
+     * used for the countAll() and countAllResults() functions.
      */
-    public $_count_string = "SELECT COUNT(*) AS ";
-    public $_random_keyword = ' ASC'; // not currently supported
+    public $count_string = "SELECT COUNT(*) AS ";
+    public $random_keyword = ' ASC'; // not currently supported
 
     /**
      * Non-persistent database connection
@@ -53,7 +55,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	private called by the base class
      * @return	resource
      */
-    public function db_connect($pooling = false)
+    public function dbConnect($pooling = false)
     {
         // Check for a UTF-8 charset being passed as CI's default 'utf8'.
         $character_set = (0 === strcasecmp('utf8', $this->char_set)) ? 'UTF-8' : $this->char_set;
@@ -84,9 +86,9 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	private called by the base class
      * @return	resource
      */
-    public function db_pconnect()
+    public function dbPConnect()
     {
-        $this->db_connect(TRUE);
+        $this->dbConnect(TRUE);
     }
 
     // --------------------------------------------------------------------
@@ -113,9 +115,9 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	private called by the base class
      * @return	resource
      */
-    public function db_select()
+    public function dbSelect()
     {
-        return $this->_execute('USE ' . $this->database);
+        return $this->execute('USE ' . $this->database);
     }
 
     // --------------------------------------------------------------------
@@ -128,7 +130,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string
      * @return	resource
      */
-    public function db_set_charset($charset, $collation)
+    public function dbSetCharset($charset, $collation)
     {
         // @todo - add support if needed
         return TRUE;
@@ -137,13 +139,13 @@ class CI_DB_sqlsrv_driver extends CI_DB
     // --------------------------------------------------------------------
 
     /**
-     * Execute the query
+     * execute the query
      *
      * @access	private called by the base class
      * @param	string	an SQL query
      * @return	resource
      */
-    public function _execute($sql)
+    public function execute($sql)
     {
         $sql = $this->_prep_query($sql);
         return sqlsrv_query($this->conn_id, $sql, null, array(
@@ -176,7 +178,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	public
      * @return	bool
      */
-    public function trans_begin($test_mode = FALSE)
+    public function transBegin($test_mode = FALSE)
     {
         if ( ! $this->trans_enabled) {
             return TRUE;
@@ -203,7 +205,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	public
      * @return	bool
      */
-    public function trans_commit()
+    public function transCommit()
     {
         if ( ! $this->trans_enabled) {
             return TRUE;
@@ -225,7 +227,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	public
      * @return	bool
      */
-    public function trans_rollback()
+    public function transRollback()
     {
         if ( ! $this->trans_enabled) {
             return TRUE;
@@ -249,7 +251,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	bool	whether or not the string will be used in a LIKE condition
      * @return	string
      */
-    public function escape_str($str, $like = FALSE)
+    public function escapeStr($str, $like = FALSE)
     {
         // Escape single quotes
         return str_replace("'", "''", $str);
@@ -263,9 +265,9 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	public
      * @return	integer
      */
-    public function affected_rows()
+    public function affectedRows()
     {
-        return @sqlrv_rows_affected($this->conn_id);
+        return @\sqlrv_rows_affected($this->conn_id);
     }
 
     // --------------------------------------------------------------------
@@ -278,9 +280,9 @@ class CI_DB_sqlsrv_driver extends CI_DB
     * @access public
     * @return integer
     */
-    public function insert_id()
+    public function insertId()
     {
-        return $this->query('select @@IDENTITY as insert_id')->row('insert_id');
+        return $this->query('select @@IDENTITY as insertId')->row('insertId');
     }
 
     // --------------------------------------------------------------------
@@ -309,7 +311,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
     * @access public
     * @return string
     */
-    public function _version()
+    public function versionStatement()
     {
         $info = sqlsrv_server_info($this->conn_id);
         return sprintf("select '%s' as ver", $info['SQLServerVersion']);
@@ -327,7 +329,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string
      * @return	string
      */
-    public function count_all($table = '')
+    public function countAll($table = '')
     {
         if ($table == '')
             return '0';
@@ -338,7 +340,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
             return '0';
 
         $row = $query->row();
-        $this->_reset_select();
+        $this->resetSelect();
         return $row->numrows;
     }
 
@@ -353,7 +355,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	boolean
      * @return	string
      */
-    public function _list_tables($prefix_limit = FALSE)
+    public function listTablesStatement($prefix_limit = FALSE)
     {
         return "SELECT name FROM sysobjects WHERE type = 'U' ORDER BY name";
     }
@@ -369,7 +371,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string	the table name
      * @return	string
      */
-    public function _list_columns($table = '')
+    public function listColumnsStatement($table = '')
     {
         return "SELECT * FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = '".$this->_escape_table($table)."'";
     }
@@ -385,7 +387,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string	the table name
      * @return	object
      */
-    public function _field_data($table)
+    public function fieldDataStatement($table)
     {
         return "SELECT TOP 1 * FROM " . $this->_escape_table($table);
     }
@@ -398,7 +400,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	private
      * @return	string
      */
-    public function _error_message()
+    public function errorMessage()
     {
         $error = array_shift(sqlsrv_errors());
         return !empty($error['message']) ? $error['message'] : null;
@@ -412,7 +414,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @access	private
      * @return	integer
      */
-    public function _error_number()
+    public function errorNumber()
     {
         $error = array_shift(sqlsrv_errors());
         return isset($error['SQLSTATE']) ? $error['SQLSTATE'] : null;
@@ -445,7 +447,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string
      * @return	string
      */
-    public function _escape_identifiers($item)
+    public function escapeIdentifiers($item)
     {
         return $item;
     }
@@ -462,7 +464,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	type
      * @return	type
      */
-    public function _from_tables($tables)
+    public function fromTablesStatement($tables)
     {
         if ( ! is_array($tables)) {
             $tables = array($tables);
@@ -484,27 +486,14 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	array	the insert values
      * @return	string
      */
-    public function _insert($table, $keys, $values)
+    public function insertStatement($table, $keys, $values)
     {
         return "INSERT INTO ".$this->_escape_table($table)." (".implode(', ', $keys).") VALUES (".implode(', ', $values).")";
     }
 
     // --------------------------------------------------------------------
 
-    /**
-     * Update statement
-     *
-     * Generates a platform-specific update string from the supplied data
-     *
-     * @access	public
-     * @param	string	the table name
-     * @param	array	the update data
-     * @param	array	the where clause
-     * @param	array	the orderby clause
-     * @param	array	the limit clause
-     * @return	string
-     */
-    public function _update($table, $values, $where)
+    protected function updateStatement($table, $values, $where, $orderby, $limit)
     {
         foreach($values as $key => $val) {
             $valstr[] = $key." = ".$val;
@@ -526,7 +515,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string	the table name
      * @return	string
      */
-    public function _truncate($table)
+    public function truncateStatement($table)
     {
         return "TRUNCATE ".$table;
     }
@@ -544,7 +533,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	string	the limit clause
      * @return	string
      */
-    public function _delete($table, $where)
+    public function deleteStatement($table, $where)
     {
         return "DELETE FROM ".$this->_escape_table($table)." WHERE ".implode(" ", $where);
     }
@@ -562,7 +551,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	integer	the offset value
      * @return	string
      */
-    public function _limit($sql, $limit, $offset)
+    public function limitStatement($sql, $limit, $offset)
     {
         $i = $limit + $offset;
 
@@ -578,7 +567,7 @@ class CI_DB_sqlsrv_driver extends CI_DB
      * @param	resource
      * @return	void
      */
-    public function _close($conn_id)
+    public function dbClose($conn_id)
     {
         @sqlsrv_close($conn_id);
     }
