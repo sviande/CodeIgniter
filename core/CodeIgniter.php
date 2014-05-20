@@ -1,4 +1,5 @@
 <?php
+
 namespace CI\Core;
 
     /**
@@ -354,11 +355,15 @@ $BM->mark('controller_execution_time_( ' . $class . ' / ' . $method . ' )_end');
  */
 $EXT->callHook('post_controller');
 
-/*
- * ------------------------------------------------------
- *  Send the final rendered output to the browser
- * ------------------------------------------------------
- */
+if (class_exists('CI\Libraries\Session', false) && isset($CI->session)) {
+    /** @var $CI Controller */
+    $CI->session->close();
+}
+
+if (class_exists('CI\DB\ActiveRecord', false) && isset($CI->db)) {
+    $CI->db->close();
+}
+
 if ($EXT->callHook('display_override') === false) {
     $OUT->display();
 }
@@ -370,14 +375,7 @@ if ($EXT->callHook('display_override') === false) {
  */
 $EXT->callHook('post_system');
 
-/*
- * ------------------------------------------------------
- *  Close the DB connection if one exists
- * ------------------------------------------------------
- */
-if (class_exists('CI\DB\ActiveRecord', false) && isset($CI->db)) {
-    $CI->db->close();
-}
+
 
 
 /* End of file CodeIgniter.php */
