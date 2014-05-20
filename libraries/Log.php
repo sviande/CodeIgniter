@@ -1,18 +1,20 @@
 <?php
 namespace CI\Libraries;
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 5.1.6 or newer
  *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
+ * @package    CodeIgniter
+ * @author    ExpressionEngine Dev Team
+ * @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @license    http://codeigniter.com/user_guide/license.html
+ * @link    http://codeigniter.com
+ * @since    Version 1.0
  * @filesource
  */
 
@@ -21,39 +23,39 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Logging Class
  *
- * @package		CodeIgniter
- * @subpackage	Libraries
- * @category	Logging
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/general/errors.html
+ * @package    CodeIgniter
+ * @subpackage  Libraries
+ * @category  Logging
+ * @author    ExpressionEngine Dev Team
+ * @link    http://codeigniter.com/user_guide/general/errors.html
  */
 class Log
 {
-    protected $_log_path;
-    protected $_threshold	= 1;
-    protected $_date_fmt	= 'Y-m-d H:i:s';
-    protected $_enabled	= TRUE;
-    protected $_levels	= array('ERROR' => '1', 'DEBUG' => '2',  'INFO' => '3', 'ALL' => '4');
+    protected $log_path;
+    protected $threshold = 1;
+    protected $date_fmt = 'Y-m-d H:i:s';
+    protected $enabled = true;
+    protected $levels = array('ERROR' => '1', 'DEBUG' => '2', 'INFO' => '3', 'ALL' => '4');
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $config =& get_config();
+        $config =& \CI\Core\get_config();
 
-        $this->_log_path = ($config['log_path'] != '') ? $config['log_path'] : APPPATH.'logs/';
+        $this->log_path = ($config['log_path'] != '') ? $config['log_path'] : APPPATH . 'logs/';
 
-        if ( ! is_dir($this->_log_path) OR ! is_really_writable($this->_log_path)) {
-            $this->_enabled = FALSE;
+        if (!is_dir($this->log_path) || !\CI\Core\is_really_writable($this->log_path)) {
+            $this->enabled = false;
         }
 
         if (is_numeric($config['log_threshold'])) {
-            $this->_threshold = $config['log_threshold'];
+            $this->threshold = $config['log_threshold'];
         }
 
         if ($config['log_date_format'] != '') {
-            $this->_date_fmt = $config['log_date_format'];
+            $this->date_fmt = $config['log_date_format'];
         }
     }
 
@@ -64,35 +66,38 @@ class Log
      *
      * Generally this function will be called using the global log_message() function
      *
-     * @param	string	the error level
-     * @param	string	the error message
-     * @param	bool	whether the error is a native PHP error
-     * @return	bool
+     * @param  string $level the error level
+     * @param  string $msg the error message
+     *
+     * @return  bool
      */
-    public function write_log($level = 'error', $msg, $php_error = FALSE)
+    public function writeLog($level = 'error', $msg = '')
     {
-        if ($this->_enabled === FALSE) {
-            return FALSE;
+        if ($this->enabled === false) {
+            return false;
         }
 
         $level = strtoupper($level);
 
-        if ( ! isset($this->_levels[$level]) OR ($this->_levels[$level] > $this->_threshold)) {
-            return FALSE;
+        if (!isset($this->levels[$level]) || ($this->levels[$level] > $this->threshold)) {
+            return false;
         }
 
-        $filepath = $this->_log_path.'log-'.date('Y-m-d').'.php';
+        $filepath = $this->log_path . 'log-' . date('Y-m-d') . '.php';
         $message  = '';
 
-        if ( ! file_exists($filepath)) {
-            $message .= "<"."?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?".">\n\n";
+        if (!file_exists($filepath)) {
+            $message .= "<" . "?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?" . ">\n\n";
         }
 
-        if ( ! $fp = @fopen($filepath, FOPEN_WRITE_CREATE)) {
-            return FALSE;
+        if (!$fp = @fopen($filepath, FOPEN_WRITE_CREATE)) {
+            return false;
         }
 
-        $message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt). ' --> '.$msg."\n";
+        $message .= $level . ' ' . (($level == 'INFO') ? ' -' : '-') . ' ' .
+            date(
+                $this->date_fmt
+            ) . ' --> ' . $msg . "\n";
 
         flock($fp, LOCK_EX);
         fwrite($fp, $message);
@@ -100,7 +105,7 @@ class Log
         fclose($fp);
 
         @chmod($filepath, FILE_WRITE_MODE);
-        return TRUE;
+        return true;
     }
 
 }

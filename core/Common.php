@@ -113,7 +113,7 @@ function is_really_writable($file)
 function &load_class($class, $directory = 'libraries', $namespace = null)
 {
     if ($namespace == \null) {
-        $namespace = __NAMESPACE__ . '\\';
+        $namespace =  'CI\\'.ucfirst($directory).'\\';
     }
     static $_classes = array();
 
@@ -322,9 +322,9 @@ function log_message($level = 'error', $message = '', $php_error = false)
     if (config_item('log_threshold') == 0) {
         return;
     }
-
+    /** @var \CI\Libraries\Log $_log */
     $_log =& load_class('Log');
-    $_log->write_log($level, $message, $php_error);
+    $_log->writeLog($level, $message, $php_error);
 }
 
 // ------------------------------------------------------------------------
