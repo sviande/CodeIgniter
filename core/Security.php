@@ -204,7 +204,7 @@ class Security
      */
     public function csrfShowError()
     {
-        show_error('The action you have requested is not allowed.');
+        show_error('The action you have requested is not allowed (csrf error).');
     }
 
     // --------------------------------------------------------------------
